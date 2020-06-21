@@ -4,8 +4,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public class RequestInventoryHolder implements InventoryHolder {
+    private RequestInventory requestInventory;
+
+    public RequestInventoryHolder(RequestInventory requestInventory) {
+        this.requestInventory = requestInventory;
+    }
+
+    public RequestInventory getRequestInventory() {
+        return requestInventory;
+    }
+
     @Override
     public Inventory getInventory() {
-        return null;
+        return requestInventory.getInventory();
     }
 }
