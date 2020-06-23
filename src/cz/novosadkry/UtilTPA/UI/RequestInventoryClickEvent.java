@@ -55,6 +55,12 @@ public class RequestInventoryClickEvent implements Listener {
                     requestInventory.getOwner().updateInventory();
                 }
 
+                // Page refresh
+                if (e.getSlot() == e.getInventory().getSize() - 5) {
+                    requestInventory.setCurrentPage(currentPage);
+                    requestInventory.getOwner().updateInventory();
+                }
+
                 // Back arrow
                 else if (e.getSlot() == e.getInventory().getSize() - 6) {
                     requestInventory.setCurrentPage(currentPage - 1);
