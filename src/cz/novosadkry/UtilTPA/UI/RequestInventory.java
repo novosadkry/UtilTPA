@@ -10,15 +10,18 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class RequestInventory {
     private Inventory inventory;
+    private String inventoryName;
+
     private Player owner;
 
     private int currentPage;
 
-    private final int pageSize;
-    private final int pagePlayerCount;
+    public static int getPageSizeAdaptive() {
+        return (int)((Math.ceil(Math.min((float)(Bukkit.getOnlinePlayers().size() - 1) / 9, 5)) + 1) * 9);
+    }
 
     public RequestInventory(Player owner) {
-        this(owner, 6 * 9);
+        this(owner, getPageSizeAdaptive());
     }
 
     public RequestInventory(Player owner, int pageSize) {
@@ -27,11 +30,8 @@ public class RequestInventory {
 
     public RequestInventory(Player owner, int pageSize, String inventoryName) {
         this.owner = owner;
-        this.pageSize = pageSize;
-        this.pagePlayerCount = pageSize - 9;
-
-        RequestInventoryHolder holder = new RequestInventoryHolder(this);
-        this.inventory = Bukkit.createInventory(holder, pageSize, inventoryName);
+        this.inventory = createInventory(pageSize, inventoryName);
+        this.inventoryName = inventoryName;
 
         setCurrentPage(0);
     }
@@ -48,14 +48,30 @@ public class RequestInventory {
         return currentPage;
     }
 
+    public int getPageSize() {
+        return this.inventory.getSize();
+    }
+
+    public int getPagePlayerCount(){
+        return this.inventory.getSize() - 9;
+    }
+
+    public void resizeAdaptive() {
+        this.inventory = createInventory(getPageSizeAdaptive(), inventoryName);
+        this.owner.openInventory(inventory);
+    }
+
     public void setCurrentPage(int page) {
         Player[] players = Bukkit.getOnlinePlayers()
                 .stream()
                 .filter(p -> p != owner)
                 .toArray(Player[]::new);
 
-        int startIndex = page * pagePlayerCount;
-        int maxPlayerCount = Math.min(players.length - startIndex, pagePlayerCount);
+        if (getPageSizeAdaptive() != getPageSize())
+            resizeAdaptive();
+
+        int startIndex = page * getPagePlayerCount();
+        int maxPlayerCount = Math.min(players.length - startIndex, getPagePlayerCount());
 
         if (Bukkit.getServer().getOnlineMode())
             setOnlineContent(players, startIndex, maxPlayerCount);
@@ -67,7 +83,7 @@ public class RequestInventory {
     }
 
     private void setOnlineContent(Player[] players, int startIndex, int maxPlayerCount) {
-        ItemStack[] contents = new ItemStack[pagePlayerCount];
+        ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {
             Player player = players[startIndex + i];
@@ -86,7 +102,7 @@ public class RequestInventory {
     }
 
     private void setOfflineContent(Player[] players, int startIndex, int maxPlayerCount) {
-        ItemStack[] contents = new ItemStack[pagePlayerCount];
+        ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {
             Player player = players[startIndex + i];
@@ -122,14 +138,14 @@ public class RequestInventory {
     }
 
     private void setFooter(int page, int playerCount, int startIndex) {
-        if (playerCount - startIndex > pagePlayerCount) {
+        if (playerCount - startIndex > getPagePlayerCount()) {
             ItemStack nextItem = new ItemStack(Material.FEATHER);
 
             ItemMeta nextMeta = nextItem.getItemMeta();
             nextMeta.setDisplayName("Další");
 
             nextItem.setItemMeta(nextMeta);
-            inventory.setItem(pageSize - 4, nextItem);
+            inventory.setItem(getPageSize() - 4, nextItem);
         }
 
         if (page > 0) {
@@ -139,7 +155,7 @@ public class RequestInventory {
             backMeta.setDisplayName("Zpět");
 
             backItem.setItemMeta(backMeta);
-            inventory.setItem(pageSize - 6, backItem);
+            inventory.setItem(getPageSize() - 6, backItem);
         }
 
         ItemStack pageItem = new ItemStack(Material.BOOK);
@@ -148,10 +164,15 @@ public class RequestInventory {
         pageMeta.setDisplayName(String.format(
                 "Strana %d z %d",
                 page + 1,
-                (int)Math.ceil((float)playerCount / pagePlayerCount))
+                (int)Math.ceil((float)playerCount / getPagePlayerCount()))
         );
 
         pageItem.setItemMeta(pageMeta);
-        inventory.setItem(pageSize - 5, pageItem);
+        inventory.setItem(getPageSize() - 5, pageItem);
+    }
+
+    private Inventory createInventory(int pageSize, String inventoryName) {
+        RequestInventoryHolder holder = new RequestInventoryHolder(this);
+        return Bukkit.createInventory(holder, pageSize, inventoryName);
     }
 }
