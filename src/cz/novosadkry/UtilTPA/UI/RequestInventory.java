@@ -15,10 +15,7 @@ public class RequestInventory {
     private Player owner;
 
     private int currentPage;
-
-    public static int getPageSizeAdaptive() {
-        return (int)((Math.ceil(Math.min((float)(Bukkit.getOnlinePlayers().size() - 1) / 9, 5)) + 1) * 9);
-    }
+    private boolean shouldReopen;
 
     public RequestInventory(Player owner) {
         this(owner, getPageSizeAdaptive());
@@ -49,16 +46,38 @@ public class RequestInventory {
     }
 
     public int getPageSize() {
-        return this.inventory.getSize();
+        return inventory.getSize();
     }
 
     public int getPagePlayerCount(){
-        return this.inventory.getSize() - 9;
+        return inventory.getSize() - 9;
+    }
+
+    public static int getPageSizeAdaptive() {
+        return (int)((
+            Math.ceil(
+                Math.min(
+                    (float)(Bukkit.getOnlinePlayers().size() - 1) / 9,
+                    5
+                )
+            ) + 1) * 9);
     }
 
     public void resizeAdaptive() {
-        this.inventory = createInventory(getPageSizeAdaptive(), inventoryName);
-        this.owner.openInventory(inventory);
+        inventory = createInventory(getPageSizeAdaptive(), inventoryName);
+        shouldReopen = true;
+    }
+
+    public void openInventory() {
+        owner.openInventory(inventory);
+        shouldReopen = false;
+    }
+
+    public void updateInventory() {
+        if (shouldReopen)
+            openInventory();
+        else
+            owner.updateInventory();
     }
 
     public void setCurrentPage(int page) {

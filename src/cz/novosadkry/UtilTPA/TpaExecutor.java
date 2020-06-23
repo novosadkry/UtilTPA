@@ -37,7 +37,7 @@ public class TpaExecutor implements CommandExecutor {
             }
 
             else if (args.length == 0)
-                player.openInventory(new RequestInventory(player).getInventory());
+                new RequestInventory(player).openInventory();
 
             else
                 player.sendMessage("§cZadal si nesprávný počet argumentů!");

@@ -52,19 +52,19 @@ public class RequestInventoryClickEvent implements Listener {
                 // Next arrow
                 if (e.getSlot() == e.getInventory().getSize() - 4) {
                     requestInventory.setCurrentPage(currentPage + 1);
-                    requestInventory.getOwner().updateInventory();
+                    requestInventory.updateInventory();
                 }
 
                 // Page refresh
                 if (e.getSlot() == e.getInventory().getSize() - 5) {
                     requestInventory.setCurrentPage(currentPage);
-                    requestInventory.getOwner().updateInventory();
+                    requestInventory.updateInventory();
                 }
 
                 // Back arrow
                 else if (e.getSlot() == e.getInventory().getSize() - 6) {
                     requestInventory.setCurrentPage(currentPage - 1);
-                    requestInventory.getOwner().updateInventory();
+                    requestInventory.updateInventory();
                 }
             }
         }
