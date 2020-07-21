@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.UI;
 
+import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -92,28 +93,20 @@ public class RequestInventory {
         int startIndex = page * getPagePlayerCount();
         int maxPlayerCount = Math.min(players.length - startIndex, getPagePlayerCount());
 
-        if (Bukkit.getServer().getOnlineMode())
-            setOnlineContent(players, startIndex, maxPlayerCount);
-        else
-            setOfflineContent(players, startIndex, maxPlayerCount);
+        setOnlineContent(players, startIndex, maxPlayerCount);
 
         setFooter(page, players.length, startIndex);
         currentPage = page;
     }
 
     private void setOnlineContent(Player[] players, int startIndex, int maxPlayerCount) {
+        HeadCacheService cacheService = HeadCacheService.getInstance();
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {
             Player player = players[startIndex + i];
 
-            ItemStack skullItem = new ItemStack(Material.PLAYER_HEAD);
-
-            SkullMeta skullMeta = (SkullMeta)skullItem.getItemMeta();
-            skullMeta.setOwningPlayer(player);
-            skullMeta.setDisplayName(player.getName());
-
-            skullItem.setItemMeta(skullMeta);
+            ItemStack skullItem = cacheService.getCache().getHead(player);
             contents[i] = skullItem;
         }
 
