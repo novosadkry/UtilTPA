@@ -20,35 +20,36 @@ public class HeadCacheService {
         return cache;
     }
 
-    private HeadCache cache = new HeadCache();
-    private Queue<Player> queue = new LinkedList<>();
+    private final HeadCache cache = new HeadCache();
+    private final Queue<Player> queue = new LinkedList<>();
 
     private BukkitTask cacheRefreshTask;
     private BukkitTask cacheQueueTask;
 
-    public static final long cacheRefreshTick = 18000; // every 18 000 ticks (approx. 15 min)
-    public static final long cacheQueueTick   = 20;    // every 20 ticks (approx. 1 sec)
-                                                       //
-                                                       // API limit is 600 requests per 10 min
+    public static final long cacheRefreshTick = 6000; // every 6 000 ticks (approx. 5 min)
+    public static final long cacheQueueTick   = 20;   // every 20 ticks (approx. 1 sec)
+                                                      //
+                                                      // API limit is 600 requests per 10 min
 
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
             LinkedList<UUID> toRemove = new LinkedList<UUID>();
 
-            cache.getData().forEach((k, v) -> {
-                if (v.ttl < System.currentTimeMillis()) {
-                    Player player = Bukkit.getPlayer(k);
+            synchronized (cache) {
+                cache.getData().forEach((k, v) -> {
+                    if (v.ttl < System.currentTimeMillis()) {
+                        Player player = Bukkit.getPlayer(k);
 
-                    if (player != null)
-                        cache.cacheHead(player);
-                    else
-                        toRemove.add(k);
-                }
-            });
+                        if (player != null && player.isOnline())
+                            cache.cacheHead(player);
+                        else
+                            toRemove.add(k);
+                    }
+                });
 
-            for (UUID k : toRemove)
-                cache.getData().remove(k);
-
+                for (UUID k : toRemove)
+                    cache.getData().remove(k);
+            }
         }, 0, cacheRefreshTick);
     }
 
@@ -61,8 +62,10 @@ public class HeadCacheService {
             if (queue.peek() != null) {
                 Player player = queue.poll();
 
-                if (!cache.getData().containsKey(player.getUniqueId()))
-                    cache.cacheHead(player);
+                synchronized (cache) {
+                    if (!cache.getData().containsKey(player.getUniqueId()))
+                        cache.cacheHead(player);
+                }
             }
         }, 0, cacheQueueTick);
     }
