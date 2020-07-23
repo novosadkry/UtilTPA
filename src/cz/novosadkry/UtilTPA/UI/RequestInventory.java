@@ -120,7 +120,7 @@ public class RequestInventory {
             Player player = players[startIndex + i];
             Material mat = null;
 
-            switch (player.hashCode() % 4) {
+            switch (player.getUniqueId().hashCode() % 4) {
                 case 0:
                     mat = Material.SKELETON_SKULL;
                     break;
