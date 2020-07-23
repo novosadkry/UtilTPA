@@ -1,6 +1,7 @@
 package cz.novosadkry.UtilTPA.UI;
 
 import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
+import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -93,14 +94,17 @@ public class RequestInventory {
         int startIndex = page * getPagePlayerCount();
         int maxPlayerCount = Math.min(players.length - startIndex, getPagePlayerCount());
 
-        setOnlineContent(players, startIndex, maxPlayerCount);
+        if (Main.config.getBoolean("online-mode"))
+            setOnlineContent(players, startIndex, maxPlayerCount);
+        else
+            setOfflineContent(players, startIndex, maxPlayerCount);
 
         setFooter(page, players.length, startIndex);
         currentPage = page;
     }
 
     private void setOnlineContent(Player[] players, int startIndex, int maxPlayerCount) {
-        HeadCacheService cacheService = HeadCacheService.getInstance();
+        HeadCacheService cacheService = Main.headCacheService;
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {

@@ -10,26 +10,26 @@ import java.util.Queue;
 import java.util.UUID;
 
 public class HeadCacheService {
-    private static HeadCacheService service = new HeadCacheService();
+    public HeadCacheService(long cacheDataTTL, long cacheRefreshTick, long cacheQueueTick) {
+        cache = new HeadCache(cacheDataTTL);
+        queue = new LinkedList<>();
 
-    public static HeadCacheService getInstance() {
-        return service;
+        this.cacheRefreshTick = cacheRefreshTick;
+        this.cacheQueueTick = cacheQueueTick;
     }
 
     public HeadCache getCache() {
         return cache;
     }
 
-    private final HeadCache cache = new HeadCache();
-    private final Queue<Player> queue = new LinkedList<>();
+    private final HeadCache cache;
+    private final Queue<Player> queue;
 
     private BukkitTask cacheRefreshTask;
     private BukkitTask cacheQueueTask;
 
-    public static final long cacheRefreshTick = 6000; // every 6 000 ticks (approx. 5 min)
-    public static final long cacheQueueTick   = 20;   // every 20 ticks (approx. 1 sec)
-                                                      //
-                                                      // API limit is 600 requests per 10 min
+    public final long cacheRefreshTick;
+    public final long cacheQueueTick;
 
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {

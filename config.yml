@@ -1,0 +1,14 @@
+cache:
+  refresh: 6000     # every 6 000 ticks (approx. 5 min)
+                    # Re-caches every expired cached head
+
+  queue: 20         # every 20 ticks (approx. 1 sec)
+                    # Pops a player from queue and caches his head
+                    # Players are enqueued every time they join
+                    # Mojang API limit is 600 requests per 10 min
+
+  expire: 900000    # expire in 900 000 millis (approx. 15 min)
+
+online-mode: true   # Whether the plugin should retrieve player heads from Mojang API
+                    # or assign random monster heads depending on on their UUID
+                    # This setting also disables the cache

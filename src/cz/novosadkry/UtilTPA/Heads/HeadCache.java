@@ -22,9 +22,14 @@ public class HeadCache {
         public long ttl;
     }
 
-    public static final long cacheDataTTL = 900000; // 900 000 millis (approx. 15 min)
+    private Map<UUID, HeadCacheData> cache;
+    public final long cacheDataTTL;
 
-    private HashMap<UUID, HeadCacheData> cache = new HashMap<>();
+    public HeadCache(long cacheDataTTL){
+        cache = new HashMap<>();
+
+        this.cacheDataTTL = cacheDataTTL;
+    }
 
     public Map<UUID, HeadCacheData> getData() {
         return cache;
