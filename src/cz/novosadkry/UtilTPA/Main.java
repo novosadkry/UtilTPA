@@ -1,5 +1,11 @@
 package cz.novosadkry.UtilTPA;
 
+import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
+import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathEvent;
+import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitEvent;
+import cz.novosadkry.UtilTPA.Commands.TPA.TpAcceptExecutor;
+import cz.novosadkry.UtilTPA.Commands.TPA.TpDenyExecutor;
+import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
 import cz.novosadkry.UtilTPA.Heads.HeadCachePlayerJoinEvent;
 import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickEvent;
@@ -26,9 +32,12 @@ public class Main extends JavaPlugin {
         this.getCommand("tpa").setExecutor(new TpaExecutor());
         this.getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
         this.getCommand("tpdeny").setExecutor(new TpDenyExecutor());
+        this.getCommand("back").setExecutor(new BackExecutor());
 
         this.getServer().getPluginManager().registerEvents(new RequestInventoryClickEvent(), this);
         this.getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinEvent(), this);
+        this.getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
+        this.getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
         if (headCacheService != null) {
             headCacheService.startCacheQueue();

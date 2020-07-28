@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA;
+package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;

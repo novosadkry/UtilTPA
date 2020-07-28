@@ -1,17 +1,16 @@
 name: UtilTPA
 author: novosadkry
 main: cz.novosadkry.UtilTPA.Main
-version: 1.1
+version: 1.2
 api-version: 1.15
 commands:
   tpa:
-     description: Posle hracovi teleport request
      usage: /tpa nick
   tpaccept:
-     description: Prijme hracuv teleport request
      usage: /tpaccept, /tpaccept nick
      aliases: [tpy, tpyes]
   tpdeny:
-     description: Odmitne hracuv teleport request
      usage: /tpdeny, /tpdeny nick
      aliases: [tpn, tpno]
+   back:
+     usage: /back

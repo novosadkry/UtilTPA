@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA;
+package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
@@ -7,7 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class TpDenyExecutor implements CommandExecutor {
+public class TpAcceptExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -24,17 +24,20 @@ public class TpDenyExecutor implements CommandExecutor {
                         return true;
                     }
 
-                    player.sendMessage("§cOdmítl si request hráče §e" + request.getFrom().getName());
-                    request.getFrom().sendMessage("§cHráč §e" + request.getTo().getName() + " §codmítl tvůj request.");
+                    request.getFrom().teleport(request.getTo().getLocation());
+                    request.getFrom().sendMessage("§aHráč §e" + request.getTo().getName() + " §apřijal tvůj request.");
                     request.cancelCountdown();
+
+                    sender.sendMessage("§aPřijal si request hráče §e" + request.getFrom().getName());
                 }
 
                 else {
                     Request request = requestManager.pop(player);
+                    request.getFrom().teleport(request.getTo().getLocation());
+                    request.getFrom().sendMessage("§aHráč §e" + request.getTo().getName() + " §apřijal tvůj request.");
                     request.cancelCountdown();
-                    request.getFrom().sendMessage("§cHráč §e" + request.getTo().getName() + " §codmítl tvůj request.");
 
-                    sender.sendMessage("§cOdmítl si request hráče §e" + request.getFrom().getName());
+                    sender.sendMessage("§aPřijal si request hráče §e" + request.getFrom().getName());
                 }
 
                 return true;
