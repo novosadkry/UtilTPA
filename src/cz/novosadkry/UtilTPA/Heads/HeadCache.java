@@ -44,7 +44,7 @@ public class HeadCache {
             UUID hashAsId = new UUID(cacheData.value.hashCode(), cacheData.value.hashCode());
 
             return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getDisplayName() + "\"}'}, SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + cacheData.value + "\"}]}}}"
+                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}, SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + cacheData.value + "\"}]}}}"
             );
         }
 
@@ -54,7 +54,7 @@ public class HeadCache {
                     : "MHF_Steve";
 
             return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getDisplayName() + "\"}'},SkullOwner:\"" + defaultSkin + "\"}"
+                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'},SkullOwner:\"" + defaultSkin + "\"}"
             );
         }
     }

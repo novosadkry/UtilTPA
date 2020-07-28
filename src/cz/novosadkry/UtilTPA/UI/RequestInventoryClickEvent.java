@@ -1,7 +1,5 @@
 package cz.novosadkry.UtilTPA.UI;
 
-import cz.novosadkry.UtilTPA.Request.Request;
-import cz.novosadkry.UtilTPA.Request.RequestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,8 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.LinkedList;
 
 public class RequestInventoryClickEvent implements Listener {
     @EventHandler
@@ -28,19 +24,8 @@ public class RequestInventoryClickEvent implements Listener {
                 Player target = Bukkit.getPlayer(skullMeta.getDisplayName());
                 Player sender = (Player)e.getWhoClicked();
 
-                if (target != null && target.isOnline() && target.isValid() && target != sender) {
-                    RequestManager requestManager = RequestManager.getInstance();
-                    requestManager.getAll().computeIfAbsent(target, k -> new LinkedList<>());
-
-                    Request request = new Request(sender, target);
-                    if (!requestManager.hasRequest(target, request))
-                        requestManager.sendRequest(request);
-                    else
-                        sender.sendMessage("§cTomuhle hráčovi už si request poslal!");
-                }
-
-                else
-                    sender.sendMessage("§cHráč je offline, mrtev, nebo neexistuje!");
+                if (target != null)
+                    sender.performCommand("tpa " + target.getName());
 
                 e.getWhoClicked().closeInventory();
             }
