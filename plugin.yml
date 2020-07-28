@@ -5,12 +5,12 @@ version: 1.2
 api-version: 1.15
 commands:
   tpa:
-     usage: /tpa nick
+    usage: /tpa nick
   tpaccept:
-     usage: /tpaccept, /tpaccept nick
-     aliases: [tpy, tpyes]
+    usage: /tpaccept, /tpaccept nick
+    aliases: [tpy, tpyes]
   tpdeny:
-     usage: /tpdeny, /tpdeny nick
-     aliases: [tpn, tpno]
-   back:
-     usage: /back
+    usage: /tpdeny, /tpdeny nick
+    aliases: [tpn, tpno]
+  back:
+    usage: /back

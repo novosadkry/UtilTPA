@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
+import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import org.bukkit.command.Command;
@@ -16,29 +17,27 @@ public class TpAcceptExecutor implements CommandExecutor {
             RequestManager requestManager = RequestManager.getInstance();
 
             if (requestManager.hasRequests(player)) {
+                Request request;
+
                 if (args.length == 1) {
-                    Request request = requestManager.popFrom(player, org.bukkit.Bukkit.getPlayer(args[0]));
+                    request = requestManager.popFrom(player, org.bukkit.Bukkit.getPlayer(args[0]));
 
                     if (request == null) {
                         sender.sendMessage("§cNemáš žádné příchozí requesty od hráče §e" + args[0]);
                         return true;
                     }
-
-                    request.getFrom().teleport(request.getTo().getLocation());
-                    request.getFrom().sendMessage("§aHráč §e" + request.getTo().getName() + " §apřijal tvůj request.");
-                    request.cancelCountdown();
-
-                    sender.sendMessage("§aPřijal si request hráče §e" + request.getFrom().getName());
                 }
 
                 else {
-                    Request request = requestManager.pop(player);
-                    request.getFrom().teleport(request.getTo().getLocation());
-                    request.getFrom().sendMessage("§aHráč §e" + request.getTo().getName() + " §apřijal tvůj request.");
-                    request.cancelCountdown();
-
-                    sender.sendMessage("§aPřijal si request hráče §e" + request.getFrom().getName());
+                    request = requestManager.pop(player);
                 }
+
+                BackPersist.lastLoc.put(request.getFrom(), request.getFrom().getLocation());
+                request.getFrom().teleport(request.getTo().getLocation());
+                request.getFrom().sendMessage("§aHráč §e" + request.getTo().getName() + " §apřijal tvůj request.");
+                request.cancelCountdown();
+
+                sender.sendMessage("§aPřijal si request hráče §e" + request.getFrom().getName());
 
                 return true;
             }
