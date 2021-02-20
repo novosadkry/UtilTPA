@@ -110,7 +110,7 @@ public class RequestInventory {
         for (int i = 0; i < maxPlayerCount; i++) {
             Player player = players[startIndex + i];
 
-            ItemStack skullItem = cacheService.getCache().getHead(player);
+            ItemStack skullItem = cacheService.getHead(player);
             contents[i] = skullItem;
         }
 

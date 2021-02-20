@@ -22,10 +22,10 @@ public class HeadCache {
         public long ttl;
     }
 
-    private Map<UUID, HeadCacheData> cache;
     public final long cacheDataTTL;
+    private final Map<UUID, HeadCacheData> cache;
 
-    public HeadCache(long cacheDataTTL){
+    public HeadCache(long cacheDataTTL) {
         cache = new HashMap<>();
 
         this.cacheDataTTL = cacheDataTTL;
@@ -44,7 +44,9 @@ public class HeadCache {
             UUID hashAsId = new UUID(cacheData.value.hashCode(), cacheData.value.hashCode());
 
             return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}, SkullOwner:{Id:\"" + hashAsId + "\",Properties:{textures:[{Value:\"" + cacheData.value + "\"}]}}}"
+                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}, " +
+                        "SkullOwner:{Id:\"" + hashAsId + "\"," +
+                        "Properties:{textures:[{Value:\"" + cacheData.value + "\"}]}}}"
             );
         }
 
@@ -54,12 +56,13 @@ public class HeadCache {
                     : "MHF_Steve";
 
             return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'},SkullOwner:\"" + defaultSkin + "\"}"
+                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}," +
+                        "SkullOwner:\"" + defaultSkin + "\"}"
             );
         }
     }
 
-    void cacheHead(Player player) {
+    public void cacheHead(Player player) {
         if (!cache.containsKey(player.getUniqueId()))
             cache.put(player.getUniqueId(), new HeadCacheData());
 

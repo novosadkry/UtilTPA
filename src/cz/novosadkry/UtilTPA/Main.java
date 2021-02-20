@@ -43,5 +43,15 @@ public class Main extends JavaPlugin {
             headCacheService.startCacheQueue();
             headCacheService.startCacheRefresh();
         }
+
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        headCacheService.stopCacheQueue();
+        headCacheService.stopCacheRefresh();
+
+        super.onDisable();
     }
 }

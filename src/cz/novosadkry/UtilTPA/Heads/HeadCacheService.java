@@ -3,6 +3,7 @@ package cz.novosadkry.UtilTPA.Heads;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.LinkedList;
@@ -18,10 +19,6 @@ public class HeadCacheService {
         this.cacheQueueTick = cacheQueueTick;
     }
 
-    public HeadCache getCache() {
-        return cache;
-    }
-
     private final HeadCache cache;
     private final Queue<Player> queue;
 
@@ -31,11 +28,38 @@ public class HeadCacheService {
     public final long cacheRefreshTick;
     public final long cacheQueueTick;
 
+    public ItemStack getHead(Player player) {
+        synchronized (cache) {
+            return cache.getHead(player);
+        }
+    }
+
+    public void enqueueHead(Player player) {
+        synchronized (queue) {
+            queue.add(player);
+        }
+    }
+
+    public void startCacheQueue() {
+        cacheQueueTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
+            synchronized (queue) {
+                if (queue.peek() != null) {
+                    Player player = queue.poll();
+
+                    synchronized (cache) {
+                        if (!cache.getData().containsKey(player.getUniqueId()))
+                            cache.cacheHead(player);
+                    }
+                }
+            }
+        }, 0, cacheQueueTick);
+    }
+
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
-            LinkedList<UUID> toRemove = new LinkedList<UUID>();
-
             synchronized (cache) {
+                LinkedList<UUID> toRemove = new LinkedList<UUID>();
+
                 cache.getData().forEach((k, v) -> {
                     if (v.ttl < System.currentTimeMillis()) {
                         Player player = Bukkit.getPlayer(k);
@@ -53,28 +77,11 @@ public class HeadCacheService {
         }, 0, cacheRefreshTick);
     }
 
-    public void stopCacheRefresh() {
-        cacheRefreshTask.cancel();
-    }
-
-    public void startCacheQueue() {
-        cacheQueueTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
-            if (queue.peek() != null) {
-                Player player = queue.poll();
-
-                synchronized (cache) {
-                    if (!cache.getData().containsKey(player.getUniqueId()))
-                        cache.cacheHead(player);
-                }
-            }
-        }, 0, cacheQueueTick);
-    }
-
     public void stopCacheQueue() {
         cacheQueueTask.cancel();
     }
 
-    public void enqueueHead(Player player) {
-        queue.add(player);
+    public void stopCacheRefresh() {
+        cacheRefreshTask.cancel();
     }
 }
