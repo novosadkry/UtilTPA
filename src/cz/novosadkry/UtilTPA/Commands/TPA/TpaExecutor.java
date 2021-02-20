@@ -26,9 +26,8 @@ public class TpaExecutor implements CommandExecutor {
                     requestManager.getAll().computeIfAbsent(target, k -> new LinkedList<>());
 
                     Request request = new Request(player, target);
-                    if (!requestManager.hasRequest(target, request))
-                        requestManager.sendRequest(request);
-                    else
+
+                    if (!requestManager.sendRequest(request))
                         player.sendMessage("§cTomuhle hráči už si request poslal!");
                 }
 

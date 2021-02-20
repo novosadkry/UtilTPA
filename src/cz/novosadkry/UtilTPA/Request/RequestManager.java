@@ -53,7 +53,10 @@ public class RequestManager {
         return requests.containsKey(to) && requests.get(to).contains(request);
     }
 
-    public void sendRequest(Request request) {
+    public boolean sendRequest(Request request) {
+        if (hasRequest(request.to, request))
+            return false;
+
         requests.get(request.to).add(request);
         request.startCountdown();
 
@@ -76,6 +79,7 @@ public class RequestManager {
                 .append(tpdeny);
 
         request.to.spigot().sendMessage(target_msg.create());
+        return true;
     }
 
     public static RequestManager getInstance() {
