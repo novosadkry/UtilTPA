@@ -12,6 +12,8 @@ public class RequestInventoryClickEvent implements Listener {
     @EventHandler
     public void OnRequestInventoryClick(InventoryClickEvent e) {
         if (e.getInventory().getHolder() instanceof RequestInventoryHolder) {
+            RequestInventoryHolder holder = (RequestInventoryHolder) e.getInventory().getHolder();
+
             e.setCancelled(true);
 
             if (e.getCurrentItem() == null || !e.getCurrentItem().hasItemMeta())
@@ -31,7 +33,7 @@ public class RequestInventoryClickEvent implements Listener {
             }
 
             else {
-                RequestInventory requestInventory = ((RequestInventoryHolder)e.getInventory().getHolder()).getRequestInventory();
+                RequestInventory requestInventory = holder.getRequestInventory();
                 int currentPage = requestInventory.getCurrentPage();
 
                 // Next arrow
