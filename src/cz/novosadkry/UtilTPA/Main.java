@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA;
 
+import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathEvent;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitEvent;
@@ -15,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
     public static FileConfiguration config;
     public static HeadCacheService headCacheService;
+
+    private static Main instance;
 
     @Override
     public void onEnable() {
@@ -39,11 +42,15 @@ public class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
         this.getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeDriver());
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         if (headCacheService != null) {
             headCacheService.startCacheQueue();
             headCacheService.startCacheRefresh();
         }
 
+        instance = this;
         super.onEnable();
     }
 
@@ -53,5 +60,9 @@ public class Main extends JavaPlugin {
         headCacheService.stopCacheRefresh();
 
         super.onDisable();
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }
