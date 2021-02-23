@@ -1,6 +1,10 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 import com.google.common.io.ByteArrayDataInput;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.PingMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestAcceptMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestDenyMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestMessage;
 
 public abstract class Message {
     public abstract void send(String player);
@@ -13,13 +17,13 @@ public abstract class Message {
                 return PingMessage.resolve(data);
 
             case REQUEST:
-                return null;
+                return RequestMessage.resolve(data);
 
             case REQUEST_ACCEPT:
-                return null;
+                return RequestAcceptMessage.resolve(data);
 
             case REQUEST_DENY:
-                return null;
+                return RequestDenyMessage.resolve(data);
 
             default:
                 return null;

@@ -19,15 +19,18 @@ public class Request {
     public Request(Player from, Player to) {
         this.from = from;
         this.to = to;
-        this.timer = new Timer();
     }
 
     public void startCountdown() {
+        if (timer == null)
+            this.timer = new Timer();
+
         timer.schedule(new RequestExpiration(this), 20000);
     }
 
     public void cancelCountdown() {
-        timer.cancel();
+        if (timer != null)
+            timer.cancel();
     }
 
     @Override

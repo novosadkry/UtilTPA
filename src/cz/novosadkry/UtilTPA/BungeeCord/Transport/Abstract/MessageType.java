@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 public enum MessageType {
     PING,

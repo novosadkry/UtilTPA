@@ -3,6 +3,8 @@ package cz.novosadkry.UtilTPA.BungeeCord.Transport;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 
@@ -37,7 +39,7 @@ public class PingMessage extends Message {
 
         // Write message data
         body.writeShort(MessageType.PING.ordinal());
-        body.writeUTF(player);
+        body.writeUTF(from);
         body.writeUTF(message);
 
         // Append message to header
