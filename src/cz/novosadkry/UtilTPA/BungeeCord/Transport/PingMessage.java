@@ -27,6 +27,11 @@ public class PingMessage extends Message {
     }
 
     @Override
+    public MessageType getType() {
+        return MessageType.PING;
+    }
+
+    @Override
     public void send(String player) {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 

@@ -26,6 +26,11 @@ public class RequestMessage extends Message {
     }
 
     @Override
+    public MessageType getType() {
+        return MessageType.REQUEST;
+    }
+
+    @Override
     public void send(String player) {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
