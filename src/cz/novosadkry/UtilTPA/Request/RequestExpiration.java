@@ -10,9 +10,7 @@ public class RequestExpiration extends TimerTask {
     }
 
     public void run() {
-        RequestManager.getInstance().get(request.to).remove(request);
-        request.from.sendMessage("§cHráč §e"+ request.to.getName() +"§c neodpověděl na tvůj request.");
-        request.to.sendMessage("§cNeodpověděl si na request hráče §e"+ request.from.getName());
+        RequestManager.getInstance().timeoutRequest(request);
     }
 }
 

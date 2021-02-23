@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
+import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -7,42 +8,28 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 public class RequestManager {
     private static RequestManager manager;
-    private HashMap<Player, LinkedList<Request>> requests = new HashMap<>();
+    private final HashMap<Player, LinkedList<Request>> requests = new HashMap<>();
 
     public HashMap<Player, LinkedList<Request>> getAll() {
         return requests;
     }
 
-    public LinkedList<Request> get(Player player) {
+    public LinkedList<Request> getAllPlayer(Player player) {
         return requests.get(player);
     }
 
-    // Get: O(1), Remove: O(1)
-    public Request pop(Player to) {
-        return requests.get(to).pop();
+    public Request get(Player to) {
+        return requests.get(to).peek();
     }
 
-    // Get: O(n), Remove: O(1)
-    public Request popFrom(Player to, Player from) {
-        Request request = null;
-
-        Iterator<Request> it = requests.get(to).iterator();
-        while (it.hasNext()) {
-            Request r = it.next();
-
-            if (r.getFrom() == from) {
-                request = r;
-                it.remove();
-                break;
-            }
-        }
-
-        return request;
+    public Request getFrom(Player to, Player from) {
+        return requests.get(to).stream()
+                .filter(r -> r.from == from)
+                .findFirst().orElse(null);
     }
 
     public boolean hasRequests(Player to) {
@@ -57,29 +44,51 @@ public class RequestManager {
         if (hasRequest(request.to, request))
             return false;
 
-        requests.get(request.to).add(request);
+        getAllPlayer(request.to).add(request);
         request.startCountdown();
 
         request.from.sendMessage("§bPoslal si teleport request hráčovi §e" + request.to.getName());
 
-        TextComponent tpaccept = new TextComponent( "§a/tpaccept" );
-        TextComponent tpdeny = new TextComponent( "§4/tpdeny" );
+        TextComponent tpAccept = new TextComponent( "§a/tpaccept" );
+        TextComponent tpDeny = new TextComponent( "§4/tpdeny" );
 
-        tpaccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + request.from.getName()));
-        tpaccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím příjmeš request").create()));
-        tpdeny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny  " + request.from.getName()));
-        tpdeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím odmítneš request").create()));
+        tpAccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + request.from.getName()));
+        tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím příjmeš request").create()));
+        tpDeny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny  " + request.from.getName()));
+        tpDeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím odmítneš request").create()));
 
-        ComponentBuilder target_msg = new ComponentBuilder("§bByl ti poslán teleport request od hráče ")
+        ComponentBuilder targetMsg = new ComponentBuilder("§bByl ti poslán teleport request od hráče ")
                 .append("§e" + request.from.getName())
                 .append("\n§bNa odpověd' máš §e20 §bsekund")
                 .append("\n\n§bPro příjmutí napiš ")
-                .append(tpaccept)
+                .append(tpAccept)
                 .append("\n§bPro odmítnutí napiš ")
-                .append(tpdeny);
+                .append(tpDeny);
 
-        request.to.spigot().sendMessage(target_msg.create());
+        request.to.spigot().sendMessage(targetMsg.create());
         return true;
+    }
+
+    public void timeoutRequest(Request request) {
+        getAllPlayer(request.to).remove(request);
+        request.from.sendMessage("§cHráč §e"+ request.to.getName() +"§c neodpověděl na tvůj request.");
+        request.to.sendMessage("§cNeodpověděl si na request hráče §e"+ request.from.getName());
+    }
+
+    public void acceptRequest(Request request) {
+        getAllPlayer(request.to).remove(request);
+        BackPersist.lastLoc.put(request.from, request.from.getLocation());
+        request.from.teleport(request.getTo().getLocation());
+        request.from.sendMessage("§aHráč §e" + request.to.getName() + " §apřijal tvůj request.");
+        request.to.sendMessage("§aPřijal si request hráče §e" + request.from.getName());
+        request.cancelCountdown();
+    }
+
+    public void denyRequest(Request request) {
+        getAllPlayer(request.to).remove(request);
+        request.from.sendMessage("§cHráč §e" + request.to.getName() + " §codmítl tvůj request.");
+        request.to.sendMessage("§cOdmítl si request hráče §e" + request.from.getName());
+        request.cancelCountdown();
     }
 
     public static RequestManager getInstance() {
