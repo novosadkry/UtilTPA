@@ -13,7 +13,7 @@ public class RequestAcceptMessage extends RequestMessage {
     }
 
     @Override
-    public void send(String player) {
+    public void send() {
 
     }
 }

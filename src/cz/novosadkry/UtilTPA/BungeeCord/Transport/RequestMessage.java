@@ -36,18 +36,18 @@ public class RequestMessage extends Message {
     }
 
     @Override
-    public void send(String player) {
+    public void send() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(player);
+        header.writeUTF(to);
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeShort(MessageType.REQUEST.ordinal());
+        body.writeShort(getType().ordinal());
         body.writeUTF(from);
         body.writeUTF(to);
 

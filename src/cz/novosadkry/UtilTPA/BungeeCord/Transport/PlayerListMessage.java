@@ -8,29 +8,30 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 
-// Example
-public class PingMessage extends Message {
-    protected String to;
-    protected String from;
-    protected String message;
+public class PlayerListMessage extends Message {
+    protected String server;
+    protected String[] playerList;
 
-    public PingMessage(String from, String to, String message) {
-        this.from = from;
-        this.to = to;
-        this.message = message;
+    public String getServer() {
+        return server;
     }
 
-    public String getFrom() {
-        return from;
+    private String[] getPlayerList() {
+        return playerList;
     }
 
-    public String getMessage() {
-        return message;
+    private PlayerListMessage setPlayerList(String[] playerList) {
+        this.playerList = playerList;
+        return this;
+    }
+
+    public PlayerListMessage(String server) {
+        this.server = server;
     }
 
     @Override
     public MessageType getType() {
-        return MessageType.PING;
+        return MessageType.PLAYER_LIST;
     }
 
     @Override
@@ -38,17 +39,14 @@ public class PingMessage extends Message {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
         // Write ForwardToPlayer header
-        header.writeUTF("ForwardToPlayer");
-        header.writeUTF(to);
+        header.writeUTF("PlayerList");
+        header.writeUTF(server);
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
         body.writeShort(getType().ordinal());
-        body.writeUTF(from);
-        body.writeUTF(to);
-        body.writeUTF(message);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -59,10 +57,9 @@ public class PingMessage extends Message {
     }
 
     public static Message resolve(ByteArrayDataInput data) {
-        String from = data.readUTF();
-        String to = data.readUTF();
-        String message = data.readUTF();
+        String server = data.readUTF();
+        String[] playerList = data.readUTF().split(", ");
 
-        return new PingMessage(from, to, message);
+        return new PlayerListMessage(server).setPlayerList(playerList);
     }
 }

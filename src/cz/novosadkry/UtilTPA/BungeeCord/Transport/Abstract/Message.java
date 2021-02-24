@@ -9,7 +9,7 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestMessage;
 public abstract class Message {
     public abstract MessageType getType();
 
-    public abstract void send(String player);
+    public abstract void send();
 
     public static Message resolve(ByteArrayDataInput data) {
         MessageType type = MessageType.values()[data.readShort()];

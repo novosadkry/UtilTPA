@@ -80,7 +80,7 @@ public class RequestManager {
             {
                 new RequestDenyMessage(request)
                         .setReason("§cTomuhle hráči už jsi request poslal!")
-                        .send(request.getFrom());
+                        .send();
             }
 
             else
