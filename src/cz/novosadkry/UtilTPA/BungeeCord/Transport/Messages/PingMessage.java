@@ -24,6 +24,10 @@ public class PingMessage extends Message {
         return from;
     }
 
+    public String getTo() {
+        return to;
+    }
+
     public String getMessage() {
         return message;
     }
