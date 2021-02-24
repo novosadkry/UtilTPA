@@ -20,10 +20,16 @@ public class TpDenyExecutor implements CommandExecutor {
                 Request request;
 
                 if (args.length == 1) {
-                    request = requestManager.getFrom(player, Bukkit.getPlayer(args[0]));
+                    Player target = Bukkit.getPlayer(args[0]);
+                    request = requestManager.getFrom(player.getName(), args[0]);
 
                     if (request == null) {
                         player.sendMessage("§cNemáš žádné příchozí requesty od hráče §e" + args[0]);
+                        return true;
+                    }
+
+                    if (target == null) {
+                        requestManager.denyRequest(request);
                         return true;
                     }
                 }
