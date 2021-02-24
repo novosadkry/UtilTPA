@@ -19,8 +19,6 @@ public class TpaExecutor implements CommandExecutor {
             if (args.length == 1) {
                 Request request = new Request(player.getName(), args[0]);
                 requestManager.sendRequest(request);
-
-                // player.sendMessage("§cHráč je offline, mrtev, nebo neexistuje!");
             }
 
             else if (args.length == 0)

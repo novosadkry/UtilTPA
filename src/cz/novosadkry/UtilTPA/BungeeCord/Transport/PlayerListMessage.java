@@ -16,7 +16,7 @@ public class PlayerListMessage extends Message {
         return server;
     }
 
-    private String[] getPlayerList() {
+    public String[] getPlayerList() {
         return playerList;
     }
 
@@ -41,17 +41,6 @@ public class PlayerListMessage extends Message {
         // Write ForwardToPlayer header
         header.writeUTF("PlayerList");
         header.writeUTF(server);
-        header.writeUTF("UtilTPA");
-
-        ByteArrayDataOutput body = ByteStreams.newDataOutput();
-
-        // Write message data
-        body.writeShort(getType().ordinal());
-
-        // Append message to header
-        byte[] bodyBytes = body.toByteArray();
-        header.writeShort(bodyBytes.length);
-        header.write(bodyBytes);
 
         Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", header.toByteArray());
     }
