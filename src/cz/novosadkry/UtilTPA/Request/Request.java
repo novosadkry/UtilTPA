@@ -56,4 +56,12 @@ public class Request {
         return from.equals(req.from)
                 && to.equals(req.to);
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                '}';
+    }
 }

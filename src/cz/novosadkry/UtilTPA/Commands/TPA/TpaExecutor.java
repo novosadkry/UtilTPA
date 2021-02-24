@@ -3,7 +3,6 @@ package cz.novosadkry.UtilTPA.Commands.TPA;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.UI.RequestInventory;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,17 +17,10 @@ public class TpaExecutor implements CommandExecutor {
             RequestManager requestManager = RequestManager.getInstance();
 
             if (args.length == 1) {
-                Player target = Bukkit.getPlayer(args[0]);
+                Request request = new Request(player.getName(), args[0]);
+                requestManager.sendRequest(request);
 
-                if (target != null && target.isOnline() && target.isValid() && target != player) {
-                    Request request = new Request(player, target);
-
-                    if (!requestManager.sendRequest(request))
-                        player.sendMessage("§cTomuhle hráči už si request poslal!");
-                }
-
-                else
-                    player.sendMessage("§cHráč je offline, mrtev, nebo neexistuje!");
+                // player.sendMessage("§cHráč je offline, mrtev, nebo neexistuje!");
             }
 
             else if (args.length == 0)

@@ -6,6 +6,7 @@ import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 import cz.novosadkry.UtilTPA.Main;
+import cz.novosadkry.UtilTPA.Request.Request;
 import org.bukkit.Bukkit;
 
 public class RequestMessage extends Message {
@@ -15,6 +16,10 @@ public class RequestMessage extends Message {
     public RequestMessage(String from, String to) {
         this.from = from;
         this.to = to;
+    }
+
+    public RequestMessage(Request request) {
+        this(request.getFrom(), request.getTo());
     }
 
     public String getFrom() {

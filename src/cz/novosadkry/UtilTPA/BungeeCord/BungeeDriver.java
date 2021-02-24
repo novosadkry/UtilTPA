@@ -6,7 +6,7 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.PingMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestMessage;
 import cz.novosadkry.UtilTPA.Request.Request;
-import org.bukkit.Bukkit;
+import cz.novosadkry.UtilTPA.Request.RequestManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -32,14 +32,14 @@ public class BungeeDriver implements PluginMessageListener {
         }
 
         else if (msg instanceof RequestMessage) {
-            RequestMessage requestMsg = (RequestMessage) msg;
-            Player from = Bukkit.getPlayer(requestMsg.getFrom());
-            Player to = Bukkit.getPlayer(requestMsg.getTo());
+            RequestManager requestManager = RequestManager.getInstance();
 
-            Request request = new Request(from, to);
+            RequestMessage requestMsg = (RequestMessage) msg;
+            Request request = new Request(requestMsg.getFrom(), requestMsg.getTo());
 
             switch (msg.getType()) {
                 case REQUEST:
+                    requestManager.sendRequest(request);
                     break;
 
                 case REQUEST_ACCEPT:

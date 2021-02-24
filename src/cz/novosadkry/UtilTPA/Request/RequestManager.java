@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -10,13 +11,19 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class RequestManager {
     private static RequestManager manager;
-    private final HashMap<String, LinkedList<Request>> requests = new HashMap<>();
+    private final Map<String, LinkedList<Request>> requests = new HashMap<>();
+    private final Queue<Request> remoteRequests = new LinkedList<Request>();
 
     public Map<String, LinkedList<Request>> getAll() {
         return requests;
+    }
+
+    public Queue<Request> getRemote() {
+        return remoteRequests;
     }
 
     public LinkedList<Request> getAllPlayer(String player) {
@@ -61,38 +68,57 @@ public class RequestManager {
         return hasRequest(to.getName(), request);
     }
 
-    public boolean sendRequest(Request request) {
+    public void sendRequest(Request request) {
         getAll().computeIfAbsent(request.getTo(), k -> new LinkedList<>());
-
-        if (hasRequest(request.getTo(), request))
-            return false;
-
-        getAllPlayer(request.getTo()).add(request);
-        request.startCountdown();
 
         final Player fromPlayer = request.getFromPlayer();
         final Player toPlayer = request.getToPlayer();
 
-        fromPlayer.sendMessage("§bPoslal si teleport request hráčovi §e" + request.getTo());
+        if (hasRequest(request.getTo(), request))
+        {
+            if (fromPlayer == null)
+            {
+                new RequestDenyMessage(request)
+                        .setReason("§cTomuhle hráči už jsi request poslal!")
+                        .send(request.getFrom());
+            }
 
-        TextComponent tpAccept = new TextComponent( "§a/tpaccept" );
-        TextComponent tpDeny = new TextComponent( "§4/tpdeny" );
+            else
+                fromPlayer.sendMessage("§cTomuhle hráči už jsi request poslal!");
 
-        tpAccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + request.getFrom()));
-        tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím příjmeš request").create()));
-        tpDeny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny  " + request.getFrom()));
-        tpDeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím odmítneš request").create()));
+            return;
+        }
 
-        ComponentBuilder targetMsg = new ComponentBuilder("\n§bByl ti poslán teleport request od hráče ")
-                .append("§e" + request.getFrom())
-                .append("\n§bNa odpověd' máš §e20 §bsekund")
-                .append("\n\n§bPro příjmutí napiš ")
-                .append(tpAccept)
-                .append("\n§bPro odmítnutí napiš ")
-                .append(tpDeny);
+        // Player is probably on another server
+        if (toPlayer == null) {
+            remoteRequests.add(request);
+        }
 
-        toPlayer.spigot().sendMessage(targetMsg.create());
-        return true;
+        else {
+            getAllPlayer(request.getTo()).add(request);
+            request.startCountdown();
+
+            TextComponent tpAccept = new TextComponent( "§a/tpaccept" );
+            TextComponent tpDeny = new TextComponent( "§4/tpdeny" );
+
+            tpAccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + request.getFrom()));
+            tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím příjmeš request").create()));
+            tpDeny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny  " + request.getFrom()));
+            tpDeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím odmítneš request").create()));
+
+            ComponentBuilder targetMsg = new ComponentBuilder("\n§bByl ti poslán teleport request od hráče ")
+                    .append("§e" + request.getFrom())
+                    .append("\n§bNa odpověd' máš §e20 §bsekund")
+                    .append("\n\n§bPro příjmutí napiš ")
+                    .append(tpAccept)
+                    .append("\n§bPro odmítnutí napiš ")
+                    .append(tpDeny);
+
+            toPlayer.spigot().sendMessage(targetMsg.create());
+
+            if (fromPlayer != null)
+                fromPlayer.sendMessage("§bPoslal si teleport request hráčovi §e" + request.getTo());
+        }
     }
 
     public void timeoutRequest(Request request) {
