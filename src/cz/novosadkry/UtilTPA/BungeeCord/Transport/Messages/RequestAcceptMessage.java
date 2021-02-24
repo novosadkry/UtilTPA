@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 

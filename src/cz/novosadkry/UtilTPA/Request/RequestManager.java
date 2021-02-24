@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.RequestDenyMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

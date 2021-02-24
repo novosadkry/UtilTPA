@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -6,33 +6,31 @@ import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 import cz.novosadkry.UtilTPA.Main;
-import cz.novosadkry.UtilTPA.Request.Request;
 import org.bukkit.Bukkit;
 
-public class RequestMessage extends Message {
-    protected String from;
+// Example
+public class PingMessage extends Message {
     protected String to;
+    protected String from;
+    protected String message;
 
-    public RequestMessage(String from, String to) {
+    public PingMessage(String from, String to, String message) {
         this.from = from;
         this.to = to;
-    }
-
-    public RequestMessage(Request request) {
-        this(request.getFrom(), request.getTo());
+        this.message = message;
     }
 
     public String getFrom() {
         return from;
     }
 
-    public String getTo() {
-        return to;
+    public String getMessage() {
+        return message;
     }
 
     @Override
     public MessageType getType() {
-        return MessageType.REQUEST;
+        return MessageType.PING;
     }
 
     @Override
@@ -50,6 +48,7 @@ public class RequestMessage extends Message {
         body.writeShort(getType().ordinal());
         body.writeUTF(from);
         body.writeUTF(to);
+        body.writeUTF(message);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -62,7 +61,8 @@ public class RequestMessage extends Message {
     public static Message resolve(ByteArrayDataInput data) {
         String from = data.readUTF();
         String to = data.readUTF();
+        String message = data.readUTF();
 
-        return new RequestMessage(from, to);
+        return new PingMessage(from, to, message);
     }
 }
