@@ -1,10 +1,7 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 import com.google.common.io.ByteArrayDataInput;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PingMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.*;
 
 public abstract class Message {
     public abstract MessageType getType();
@@ -12,23 +9,25 @@ public abstract class Message {
     public abstract void send();
 
     public static Message resolve(ByteArrayDataInput data) {
-        MessageType type = MessageType.values()[data.readShort()];
+        final String subChannel = data.readUTF();
 
-        switch (type) {
-            case PING:
-                return PingMessage.resolve(data);
+        if (subChannel.equalsIgnoreCase("UtilTPA")) {
+            final short length = data.readShort();
+            MessageType type = MessageType.values()[data.readShort()];
 
-            case REQUEST:
-                return RequestMessage.resolve(data);
-
-            case REQUEST_ACCEPT:
-                return RequestAcceptMessage.resolve(data);
-
-            case REQUEST_DENY:
-                return RequestDenyMessage.resolve(data);
-
-            default:
-                return null;
+            switch (type) {
+                case PING: return PingMessage.resolve(data);
+                case REQUEST: return RequestMessage.resolve(data);
+                case REQUEST_ACCEPT: return RequestAcceptMessage.resolve(data);
+                case REQUEST_DENY: return RequestDenyMessage.resolve(data);
+                default: return null;
+            }
         }
+
+        else if (subChannel.equalsIgnoreCase("PlayerList")) {
+            return PlayerListMessage.resolve(data);
+        }
+
+        return null;
     }
 }

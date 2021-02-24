@@ -1,6 +1,8 @@
 package cz.novosadkry.UtilTPA;
 
 import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PlayerListMessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathEvent;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitEvent;
@@ -42,8 +44,10 @@ public class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
         this.getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeDriver());
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", BungeeDriver.getInstance());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+        BungeeDriver.getInstance().registerListener(PlayerListMessage.class, new PlayerListMessageListener());
 
         if (headCacheService != null) {
             headCacheService.startCacheQueue();
