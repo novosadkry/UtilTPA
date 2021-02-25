@@ -46,6 +46,10 @@ public class Request {
             timer.cancel();
     }
 
+    public boolean valid() {
+        return !from.equals(to) && !from.isEmpty() && !to.isEmpty();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

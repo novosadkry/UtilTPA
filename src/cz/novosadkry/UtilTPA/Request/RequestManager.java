@@ -11,19 +11,13 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class RequestManager {
     private static RequestManager manager;
     private final Map<String, LinkedList<Request>> requests = new HashMap<>();
-    private final Queue<Request> remoteRequests = new LinkedList<Request>();
 
     public Map<String, LinkedList<Request>> getAll() {
         return requests;
-    }
-
-    public Queue<Request> getRemote() {
-        return remoteRequests;
     }
 
     public LinkedList<Request> getAllPlayer(String player) {
@@ -74,6 +68,13 @@ public class RequestManager {
         final Player fromPlayer = request.getFromPlayer();
         final Player toPlayer = request.getToPlayer();
 
+        if (!request.valid()) {
+            if (fromPlayer != null)
+                fromPlayer.sendMessage("§cPožadavek je neplatný!");
+
+            return;
+        }
+
         if (hasRequest(request.getTo(), request))
         {
             if (fromPlayer == null)
@@ -91,7 +92,7 @@ public class RequestManager {
 
         // Player is probably on another server
         if (toPlayer == null) {
-            remoteRequests.add(request);
+            // TODO: Send message based on player list
         }
 
         else {
