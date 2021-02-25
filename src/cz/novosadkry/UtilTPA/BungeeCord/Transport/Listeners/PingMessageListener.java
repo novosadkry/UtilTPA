@@ -14,7 +14,7 @@ public class PingMessageListener implements MessageListener {
     }
 
     public void onMessage(PingMessage msg) {
-        Player player = Bukkit.getPlayer(msg.getTo());
+        Player player = Bukkit.getPlayerExact(msg.getTo());
 
         if (player != null)
             player.sendMessage(String.format("%s: %s", msg.getFrom(), msg.getMessage()));

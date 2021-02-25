@@ -20,7 +20,7 @@ public class TpAcceptExecutor implements CommandExecutor {
                 Request request;
 
                 if (args.length == 1) {
-                    Player target = Bukkit.getPlayer(args[0]);
+                    Player target = Bukkit.getPlayerExact(args[0]);
                     request = requestManager.getFrom(player.getName(), args[0]);
 
                     if (request == null) {

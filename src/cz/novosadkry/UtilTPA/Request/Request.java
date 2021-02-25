@@ -18,11 +18,11 @@ public class Request {
     }
 
     public Player getFromPlayer() {
-        return Bukkit.getPlayer(from);
+        return Bukkit.getPlayerExact(from);
     }
 
     public Player getToPlayer() {
-        return Bukkit.getPlayer(to);
+        return Bukkit.getPlayerExact(to);
     }
 
     public Request(String from, String to) {
