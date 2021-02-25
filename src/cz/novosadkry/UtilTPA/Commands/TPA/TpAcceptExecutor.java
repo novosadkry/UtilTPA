@@ -2,6 +2,7 @@ package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
+import cz.novosadkry.UtilTPA.Request.RequestPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +14,7 @@ public class TpAcceptExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
+            RequestPlayer player = new RequestPlayer((Player) sender);
             RequestManager requestManager = RequestManager.getInstance();
 
             if (requestManager.hasRequests(player)) {
@@ -21,10 +22,10 @@ public class TpAcceptExecutor implements CommandExecutor {
 
                 if (args.length == 1) {
                     Player target = Bukkit.getPlayerExact(args[0]);
-                    request = requestManager.getFrom(player.getName(), args[0]);
+                    request = requestManager.getFrom(player, new RequestPlayer(args[0]));
 
                     if (request == null) {
-                        player.sendMessage("§cNemáš žádné příchozí requesty od hráče §e" + args[0]);
+                        player.getPlayer().sendMessage("§cNemáš žádné příchozí requesty od hráče §e" + args[0]);
                         return true;
                     }
 
@@ -42,7 +43,7 @@ public class TpAcceptExecutor implements CommandExecutor {
                 return true;
             }
 
-            player.sendMessage("§cNemáš žádné příchozí requesty!");
+            player.getPlayer().sendMessage("§cNemáš žádné příchozí requesty!");
         }
 
         return true;

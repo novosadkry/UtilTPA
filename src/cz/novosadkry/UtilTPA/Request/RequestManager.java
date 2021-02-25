@@ -6,7 +6,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -14,93 +13,68 @@ import java.util.LinkedList;
 
 public class RequestManager {
     private static RequestManager manager;
-    private final Map<String, LinkedList<Request>> requests = new HashMap<>();
+    private final Map<RequestPlayer, LinkedList<Request>> requests = new HashMap<>();
 
-    public Map<String, LinkedList<Request>> getAll() {
+    public Map<RequestPlayer, LinkedList<Request>> getAll() {
         return requests;
     }
 
-    public LinkedList<Request> getAllPlayer(String player) {
+    public LinkedList<Request> getAllPlayer(RequestPlayer player) {
         return requests.get(player);
     }
 
-    public LinkedList<Request> getAllPlayer(Player player) {
-        return getAllPlayer(player.getName());
-    }
-
-    public Request get(String to) {
+    public Request get(RequestPlayer to) {
         return requests.get(to).peek();
     }
 
-    public Request get(Player to) {
-        return get(to.getName());
-    }
-
-    public Request getFrom(String to, String from) {
+    public Request getFrom(RequestPlayer to, RequestPlayer from) {
         return requests.get(to).stream()
                 .filter(r -> r.getFrom().equals(from))
                 .findFirst().orElse(null);
     }
 
-    public Request getFrom(Player to, Player from) {
-        return getFrom(to.getName(), from.getName());
-    }
-
-    public boolean hasRequests(String to) {
+    public boolean hasRequests(RequestPlayer to) {
         return requests.containsKey(to) && !requests.get(to).isEmpty();
     }
 
-    public boolean hasRequests(Player to) {
-        return hasRequests(to.getName());
-    }
-
-    public boolean hasRequest(String to, Request request) {
+    public boolean hasRequest(RequestPlayer to, Request request) {
         return requests.containsKey(to) && requests.get(to).contains(request);
-    }
-
-    public boolean hasRequest(Player to, Request request) {
-        return hasRequest(to.getName(), request);
     }
 
     public void sendRequest(Request request) {
         getAll().computeIfAbsent(request.getTo(), k -> new LinkedList<>());
 
-        final Player fromPlayer = request.getFromPlayer();
-        final Player toPlayer = request.getToPlayer();
+        final RequestPlayer from = request.getFrom();
+        final RequestPlayer to = request.getTo();
 
         if (!request.valid()) {
-            if (fromPlayer != null)
-                fromPlayer.sendMessage("§cPožadavek je neplatný!");
-
+            from.onLocal(p -> p.sendMessage("§cPožadavek je neplatný!"));
             return;
         }
 
         if (hasRequest(request.getTo(), request))
         {
-            if (fromPlayer == null)
-            {
-                new RequestDenyMessage(request)
-                        .setReason("§cTomuhle hráči už jsi request poslal!")
-                        .send();
-            }
+            from.onRemote(p ->
+                    new RequestDenyMessage(request)
+                            .setReason("§cTomuhle hráči už jsi request poslal!")
+                            .send()
+            );
 
-            else
-                fromPlayer.sendMessage("§cTomuhle hráči už jsi request poslal!");
-
+            from.onLocal(p -> p.sendMessage("§cTomuhle hráči už jsi request poslal!"));
             return;
         }
 
         // Player is probably on another server
-        if (toPlayer == null) {
+        if (to.isRemote()) {
             // TODO: Send message based on player list
         }
 
         else {
-            getAllPlayer(request.getTo()).add(request);
+            getAllPlayer(to).add(request);
             request.startCountdown();
 
-            TextComponent tpAccept = new TextComponent( "§a/tpaccept" );
-            TextComponent tpDeny = new TextComponent( "§4/tpdeny" );
+            TextComponent tpAccept = new TextComponent("§a/tpaccept");
+            TextComponent tpDeny = new TextComponent("§4/tpdeny");
 
             tpAccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + request.getFrom()));
             tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Kliknutím příjmeš request").create()));
@@ -115,56 +89,46 @@ public class RequestManager {
                     .append("\n§bPro odmítnutí napiš ")
                     .append(tpDeny);
 
-            toPlayer.spigot().sendMessage(targetMsg.create());
-
-            if (fromPlayer != null)
-                fromPlayer.sendMessage("§bPoslal si teleport request hráčovi §e" + request.getTo());
+            to.onLocal(p -> p.spigot().sendMessage(targetMsg.create()));
+            from.onLocal(p -> p.sendMessage("§bPoslal si teleport request hráčovi §e" + request.getTo()));
         }
     }
 
     public void timeoutRequest(Request request) {
         getAllPlayer(request.getTo()).remove(request);
 
-        final Player fromPlayer = request.getFromPlayer();
-        final Player toPlayer = request.getToPlayer();
+        final RequestPlayer from = request.getFrom();
+        final RequestPlayer to = request.getTo();
 
-        if (fromPlayer != null)
-            fromPlayer.sendMessage("§cHráč §e"+ request.getTo() +"§c neodpověděl na tvůj request.");
-
-        if (toPlayer != null)
-            toPlayer.sendMessage("§cNeodpověděl si na request hráče §e"+ request.getFrom());
+        from.onLocal(p -> p.sendMessage("§cHráč §e"+ request.getTo() +"§c neodpověděl na tvůj request."));
+        to.onLocal(p -> p.sendMessage("§cNeodpověděl si na request hráče §e"+ request.getFrom()));
     }
 
     public void acceptRequest(Request request) {
         getAllPlayer(request.getTo()).remove(request);
 
-        final Player fromPlayer = request.getFromPlayer();
-        final Player toPlayer = request.getToPlayer();
+        final RequestPlayer from = request.getFrom();
+        final RequestPlayer to = request.getTo();
 
-        if (fromPlayer != null) {
-            BackPersist.lastLoc.put(fromPlayer, fromPlayer.getLocation());
+        from.onLocal(p -> {
+            BackPersist.lastLoc.put(p, p.getLocation());
 
-            fromPlayer.teleport(toPlayer.getLocation());
-            fromPlayer.sendMessage("§aHráč §e" + request.getTo() + " §apřijal tvůj request.");
-        }
+            p.teleport(to.getPlayer().getLocation());
+            p.sendMessage("§aHráč §e" + request.getTo() + " §apřijal tvůj request.");
+        });
 
-        if (toPlayer != null)
-            toPlayer.sendMessage("§aPřijal jsi request hráče §e" + request.getFrom());
-
+        to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + request.getFrom()));
         request.cancelCountdown();
     }
 
     public void denyRequest(Request request) {
         getAllPlayer(request.getTo()).remove(request);
 
-        final Player fromPlayer = request.getFromPlayer();
-        final Player toPlayer = request.getToPlayer();
+        final RequestPlayer from = request.getFrom();
+        final RequestPlayer to = request.getTo();
 
-        if (fromPlayer != null)
-            fromPlayer.sendMessage("§cHráč §e" + request.getTo() + " §codmítnul tvůj request.");
-
-        if (toPlayer != null)
-            toPlayer.sendMessage("§cOdmítnul jsi request hráče §e" + request.getFrom());
+        from.onLocal(p -> p.sendMessage("§cHráč §e" + request.getTo() + " §codmítnul tvůj request."));
+        to.onLocal(p -> p.sendMessage("§cOdmítnul jsi request hráče §e" + request.getFrom()));
 
         request.cancelCountdown();
     }

@@ -1,37 +1,26 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.util.Timer;
 
 public class Request {
-    private final String from, to;
+    private final RequestPlayer from, to;
     private Timer timer;
 
-    public String getFrom() {
+    public RequestPlayer getFrom() {
         return from;
     }
 
-    public String getTo() {
+    public RequestPlayer getTo() {
         return to;
     }
 
-    public Player getFromPlayer() {
-        return Bukkit.getPlayerExact(from);
-    }
-
-    public Player getToPlayer() {
-        return Bukkit.getPlayerExact(to);
-    }
-
-    public Request(String from, String to) {
+    public Request(RequestPlayer from, RequestPlayer to) {
         this.from = from;
         this.to = to;
     }
 
-    public Request(Player from, Player to) {
-        this(from.getName(), to.getName());
+    public Request(String from, String to) {
+        this(new RequestPlayer(from), new RequestPlayer(to));
     }
 
     public void startCountdown() {
@@ -47,7 +36,7 @@ public class Request {
     }
 
     public boolean valid() {
-        return !from.equals(to) && !from.isEmpty() && !to.isEmpty();
+        return !from.equals(to);
     }
 
     @Override

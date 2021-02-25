@@ -19,7 +19,7 @@ public class RequestMessage extends Message {
     }
 
     public RequestMessage(Request request) {
-        this(request.getFrom(), request.getTo());
+        this(request.getFrom().getName(), request.getTo().getName());
     }
 
     public String getFrom() {
