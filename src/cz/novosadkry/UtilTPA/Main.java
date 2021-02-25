@@ -3,8 +3,6 @@ package cz.novosadkry.UtilTPA;
 import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PingMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PlayerListMessageListener;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PingMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathEvent;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitEvent;
@@ -15,6 +13,7 @@ import cz.novosadkry.UtilTPA.Heads.HeadCachePlayerJoinEvent;
 import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -49,8 +48,8 @@ public class Main extends JavaPlugin {
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", BungeeDriver.getInstance());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        BungeeDriver.getInstance().registerListener(PlayerListMessage.class, new PlayerListMessageListener());
-        BungeeDriver.getInstance().registerListener(PingMessage.class, new PingMessageListener());
+        BungeeDriver.getInstance().registerListener(new PlayerListMessageListener());
+        BungeeDriver.getInstance().registerListener(new PingMessageListener());
 
         if (headCacheService != null) {
             headCacheService.startCacheQueue();
@@ -63,6 +62,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HandlerList.unregisterAll(this);
+
+        BungeeDriver.getInstance().unregisterListeners();
+
         headCacheService.stopCacheQueue();
         headCacheService.stopCacheRefresh();
 

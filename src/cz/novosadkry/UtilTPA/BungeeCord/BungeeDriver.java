@@ -8,9 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BungeeDriver implements PluginMessageListener {
     private static BungeeDriver instance;
@@ -22,31 +20,26 @@ public class BungeeDriver implements PluginMessageListener {
         return instance;
     }
 
-    private final Map<Class<? extends Message>, List<MessageListener>> listeners;
+    private final List<MessageListener> listeners;
 
     public BungeeDriver() {
-        listeners = new HashMap<>();
+        listeners = new ArrayList<>();
     }
 
-    public <T extends MessageListener> void registerListener(Class<? extends Message> type, T listener) {
-        listeners.putIfAbsent(type, new ArrayList<>());
-
-        List<MessageListener> list = listeners.get(type);
-        list.add(listener);
+    public void registerListener(MessageListener listener) {
+        listeners.add(listener);
     }
 
-    public <T extends MessageListener> void unregisterListener(Class<? extends Message> type, T listener) {
-        listeners.putIfAbsent(type, new ArrayList<>());
-
-        List<MessageListener> list = listeners.get(type);
-        list.remove(listener);
+    public void unregisterListener(MessageListener listener) {
+        listeners.remove(listener);
     }
 
-    private void dispatchListeners(Message msg) {
-        if (!listeners.containsKey(msg.getClass()))
-            return;
+    public void unregisterListeners() {
+        listeners.clear();
+    }
 
-        for (MessageListener listener : listeners.get(msg.getClass())) {
+    private void notifyListeners(Message msg) {
+        for (MessageListener listener : listeners) {
             listener.onMessage(msg);
         }
     }
@@ -59,32 +52,9 @@ public class BungeeDriver implements PluginMessageListener {
         ByteArrayDataInput data = ByteStreams.newDataInput(bytes);
         Message msg = Message.resolve(data);
 
-        assert msg != null;
-        dispatchListeners(msg);
+        if (msg == null)
+            return;
 
-
-//            if (msg instanceof PingMessage) {
-//                PingMessage pingMsg = (PingMessage) msg;
-//                player.sendMessage(String.format("%s: %s", pingMsg.getFrom(), pingMsg.getMessage()));
-//            }
-//
-//            else if (msg instanceof RequestMessage) {
-//                RequestManager requestManager = RequestManager.getInstance();
-//
-//                RequestMessage requestMsg = (RequestMessage) msg;
-//                Request request = new Request(requestMsg.getFrom(), requestMsg.getTo());
-//
-//                switch (msg.getType()) {
-//                    case REQUEST:
-//                        requestManager.sendRequest(request);
-//                        break;
-//
-//                    case REQUEST_ACCEPT:
-//                        break;
-//
-//                    case REQUEST_DENY:
-//                        break;
-//                }
-//            }
+        notifyListeners(msg);
     }
 }

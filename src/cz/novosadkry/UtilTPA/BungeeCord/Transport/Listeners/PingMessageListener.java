@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 public class PingMessageListener implements MessageListener {
     @Override
     public void onMessage(Message msg) {
-        onMessage((PingMessage) msg);
+        if (msg instanceof PingMessage)
+            onMessage((PingMessage) msg);
     }
 
     public void onMessage(PingMessage msg) {

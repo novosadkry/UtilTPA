@@ -8,7 +8,8 @@ import org.bukkit.Bukkit;
 public class PlayerListMessageListener implements MessageListener {
     @Override
     public void onMessage(Message msg) {
-        onMessage((PlayerListMessage) msg);
+        if (msg instanceof PlayerListMessage)
+            onMessage((PlayerListMessage) msg);
     }
 
     public void onMessage(PlayerListMessage msg) {
