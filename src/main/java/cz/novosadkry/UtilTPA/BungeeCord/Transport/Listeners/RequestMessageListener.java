@@ -2,6 +2,8 @@ package cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Request.Request;
@@ -24,6 +26,8 @@ public class RequestMessageListener implements MessageListener {
                 break;
 
             case REQUEST_ACCEPT:
+                RequestAcceptMessage acceptMsg = (RequestAcceptMessage) msg;
+                request.getFrom().onLocal(p -> new ConnectMessage(p, acceptMsg.getServer()).send());
                 break;
 
             case REQUEST_DENY:

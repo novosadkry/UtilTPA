@@ -10,8 +10,19 @@ import cz.novosadkry.UtilTPA.Request.Request;
 import org.bukkit.Bukkit;
 
 public class RequestAcceptMessage extends RequestMessage {
+    protected String server;
+
     public RequestAcceptMessage(Request request) {
         super(request);
+    }
+
+    public String getServer() {
+        return server;
+    }
+
+    public RequestAcceptMessage setServer(String server) {
+        this.server = server;
+        return this;
     }
 
     @Override
@@ -34,6 +45,7 @@ public class RequestAcceptMessage extends RequestMessage {
         body.writeShort(getType().ordinal());
         body.writeUTF(request.getFrom().getName());
         body.writeUTF(request.getTo().getName());
+        body.writeUTF(server);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -46,7 +58,9 @@ public class RequestAcceptMessage extends RequestMessage {
     public static Message resolve(ByteArrayDataInput data) {
         String from = data.readUTF();
         String to = data.readUTF();
+        String server = data.readUTF();
 
-        return new RequestAcceptMessage(new Request(from, to));
+        return new RequestAcceptMessage(new Request(from, to))
+                .setServer(server);
     }
 }

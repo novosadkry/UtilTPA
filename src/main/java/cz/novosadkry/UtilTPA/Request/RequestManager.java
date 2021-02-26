@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
@@ -120,6 +121,10 @@ public class RequestManager {
             p.teleport(to.getPlayer().getLocation());
             p.sendMessage("§aHráč §e" + request.getTo() + " §apřijal tvůj request.");
         });
+
+        from.onRemote(p -> new RequestAcceptMessage(request)
+                .setServer("TODO: Ask Bungee for server name")
+                .send());
 
         to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + request.getFrom()));
         request.cancelCountdown();

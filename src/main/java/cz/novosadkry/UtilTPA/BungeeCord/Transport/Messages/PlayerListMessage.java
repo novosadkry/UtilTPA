@@ -38,7 +38,7 @@ public class PlayerListMessage extends Message {
     public void send() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
-        // Write ForwardToPlayer header
+        // Write PlayerList header
         header.writeUTF("PlayerList");
         header.writeUTF(server);
 
