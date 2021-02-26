@@ -7,12 +7,15 @@ import org.bukkit.Bukkit;
 
 public class PlayerListMessageListener implements MessageListener {
     @Override
-    public void onMessage(Message msg) {
+    public boolean onMessage(Message msg) {
         if (msg instanceof PlayerListMessage)
             onMessage((PlayerListMessage) msg);
+
+        return true;
     }
 
-    public void onMessage(PlayerListMessage msg) {
+    public boolean onMessage(PlayerListMessage msg) {
         Bukkit.broadcastMessage(String.join(", ", msg.getPlayerList()));
+        return true;
     }
 }

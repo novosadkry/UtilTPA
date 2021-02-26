@@ -4,6 +4,9 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.GetServerMessage;
+import cz.novosadkry.UtilTPA.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -21,9 +24,31 @@ public class BungeeDriver implements PluginMessageListener {
     }
 
     private final List<MessageListener> listeners;
+    private String serverName;
 
     public BungeeDriver() {
         listeners = new ArrayList<>();
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void askForServerName() {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            if (serverName != null)
+                return;
+
+            new GetServerMessage().on(msg -> {
+                if (!(msg instanceof GetServerMessage))
+                    return true;
+
+                serverName = ((GetServerMessage) msg).getServer();
+                return false;
+            }).send();
+
+            askForServerName();
+        }, 20L);
     }
 
     public void registerListener(MessageListener listener) {
@@ -39,9 +64,7 @@ public class BungeeDriver implements PluginMessageListener {
     }
 
     private void notifyListeners(Message msg) {
-        for (MessageListener listener : listeners) {
-            listener.onMessage(msg);
-        }
+        listeners.removeIf(l -> !l.onMessage(msg));
     }
 
     @Override

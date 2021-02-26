@@ -25,6 +25,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
+
         this.saveDefaultConfig();
         config = this.getConfig();
 
@@ -52,13 +54,13 @@ public class Main extends JavaPlugin {
         BungeeDriver.getInstance().registerListener(new PingMessageListener());
         BungeeDriver.getInstance().registerListener(new RequestMessageListener());
         BungeeDriver.getInstance().registerListener(new PlayerListMessageListener());
+        BungeeDriver.getInstance().askForServerName();
 
         if (headCacheService != null) {
             headCacheService.startCacheQueue();
             headCacheService.startCacheRefresh();
         }
 
-        instance = this;
         super.onEnable();
     }
 

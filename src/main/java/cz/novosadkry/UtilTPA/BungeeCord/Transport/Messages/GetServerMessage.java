@@ -9,7 +9,7 @@ import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 
 public class GetServerMessage extends Message {
-    public String server;
+    protected String server;
 
     public String getServer() {
         return server;

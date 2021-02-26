@@ -11,12 +11,14 @@ import cz.novosadkry.UtilTPA.Request.RequestManager;
 
 public class RequestMessageListener implements MessageListener {
     @Override
-    public void onMessage(Message msg) {
+    public boolean onMessage(Message msg) {
         if (msg instanceof RequestMessage)
             onMessage((RequestMessage) msg);
+
+        return true;
     }
 
-    public void onMessage(RequestMessage msg) {
+    public boolean onMessage(RequestMessage msg) {
         RequestManager requestManager = RequestManager.getInstance();
         Request request = msg.getRequest();
 
@@ -35,5 +37,7 @@ public class RequestMessageListener implements MessageListener {
                 request.getFrom().onLocal(p -> p.sendMessage(denyMsg.getReason()));
                 break;
         }
+
+        return true;
     }
 }

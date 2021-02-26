@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
+import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
@@ -123,7 +124,7 @@ public class RequestManager {
         });
 
         from.onRemote(p -> new RequestAcceptMessage(request)
-                .setServer("TODO: Ask Bungee for server name")
+                .setServer(BungeeDriver.getInstance().getServerName())
                 .send());
 
         to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + request.getFrom()));

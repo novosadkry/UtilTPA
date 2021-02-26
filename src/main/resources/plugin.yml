@@ -3,6 +3,7 @@ author: novosadkry
 main: cz.novosadkry.UtilTPA.Main
 version: 1.2
 api-version: 1.15
+
 commands:
   tpa:
     usage: /tpa nick

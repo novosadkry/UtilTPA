@@ -1,12 +1,18 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 import com.google.common.io.ByteArrayDataInput;
+import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.*;
 
 public abstract class Message {
     public abstract MessageType getType();
 
     public abstract void send();
+
+    public Message on(MessageListener callback) {
+        BungeeDriver.getInstance().registerListener(callback);
+        return this;
+    }
 
     public static Message resolve(ByteArrayDataInput data) {
         final String subChannel = data.readUTF();

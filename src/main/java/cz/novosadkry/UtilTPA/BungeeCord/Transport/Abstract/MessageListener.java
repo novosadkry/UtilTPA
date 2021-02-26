@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 public interface MessageListener {
-    void onMessage(Message msg);
+    /** Should be removed from the invocation list if it returns <code>false</code> */
+    boolean onMessage(Message msg);
 }
