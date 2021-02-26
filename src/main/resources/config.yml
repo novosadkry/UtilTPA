@@ -12,3 +12,5 @@ cache:
 online-mode: true   # Whether the plugin should retrieve player heads from Mojang API
                     # or assign random monster heads depending on on their UUID
                     # This setting also disables the cache
+
+bungeecord: true    # Enables cross-server support using BungeeCord as a proxy
