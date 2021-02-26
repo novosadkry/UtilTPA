@@ -55,11 +55,9 @@ public class RequestManager {
 
         if (hasRequest(request.getTo(), request))
         {
-            from.onRemote(p ->
-                    new RequestDenyMessage(request)
-                            .setReason("§cTomuhle hráči už jsi request poslal!")
-                            .send()
-            );
+            from.onRemote(p -> new RequestDenyMessage(request)
+                    .setReason("§cTomuhle hráči už jsi request poslal!")
+                    .send());
 
             from.onLocal(p -> p.sendMessage("§cTomuhle hráči už jsi request poslal!"));
             return;
@@ -104,6 +102,10 @@ public class RequestManager {
 
         from.onLocal(p -> p.sendMessage("§cHráč §e"+ request.getTo() +"§c neodpověděl na tvůj request."));
         to.onLocal(p -> p.sendMessage("§cNeodpověděl si na request hráče §e"+ request.getFrom()));
+
+        from.onRemote(p -> new RequestDenyMessage(request)
+                .setReason("§cHráč §e"+ request.getTo() +"§c neodpověděl na tvůj request.")
+                .send());
     }
 
     public void acceptRequest(Request request) {
@@ -131,6 +133,10 @@ public class RequestManager {
 
         from.onLocal(p -> p.sendMessage("§cHráč §e" + request.getTo() + " §codmítnul tvůj request."));
         to.onLocal(p -> p.sendMessage("§cOdmítnul jsi request hráče §e" + request.getFrom()));
+
+        from.onRemote(p -> new RequestDenyMessage(request)
+                .setReason("§cHráč §e" + request.getTo() + " §codmítnul tvůj request.")
+                .send());
 
         request.cancelCountdown();
     }
