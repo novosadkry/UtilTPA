@@ -12,10 +12,6 @@ import org.bukkit.Bukkit;
 public class RequestDenyMessage extends RequestMessage {
     protected String reason;
 
-    public RequestDenyMessage(String from, String to) {
-        super(from, to);
-    }
-
     public RequestDenyMessage(Request request) {
         super(request);
     }
@@ -40,15 +36,15 @@ public class RequestDenyMessage extends RequestMessage {
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(to);
+        header.writeUTF(request.getFrom().getName());
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
         body.writeShort(getType().ordinal());
-        body.writeUTF(from);
-        body.writeUTF(to);
+        body.writeUTF(request.getFrom().getName());
+        body.writeUTF(request.getTo().getName());
         body.writeUTF(reason);
 
         // Append message to header
@@ -64,6 +60,7 @@ public class RequestDenyMessage extends RequestMessage {
         String to = data.readUTF();
         String reason = data.readUTF();
 
-        return new RequestDenyMessage(from, to).setReason(reason);
+        return new RequestDenyMessage(new Request(from, to))
+                .setReason(reason);
     }
 }

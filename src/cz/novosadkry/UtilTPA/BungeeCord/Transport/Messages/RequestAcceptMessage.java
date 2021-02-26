@@ -1,10 +1,11 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
+import cz.novosadkry.UtilTPA.Request.Request;
 
 public class RequestAcceptMessage extends RequestMessage {
-    public RequestAcceptMessage(String from, String to) {
-        super(from, to);
+    public RequestAcceptMessage(Request request) {
+        super(request);
     }
 
     @Override

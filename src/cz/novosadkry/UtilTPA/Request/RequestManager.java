@@ -1,6 +1,7 @@
 package cz.novosadkry.UtilTPA.Request;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -67,6 +68,7 @@ public class RequestManager {
         // Player is probably on another server
         if (to.isRemote()) {
             // TODO: Send message based on player list
+            new RequestMessage(request).send();
         }
 
         else {

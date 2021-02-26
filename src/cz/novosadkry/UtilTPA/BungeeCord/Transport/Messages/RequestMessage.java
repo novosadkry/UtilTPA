@@ -10,24 +10,14 @@ import cz.novosadkry.UtilTPA.Request.Request;
 import org.bukkit.Bukkit;
 
 public class RequestMessage extends Message {
-    protected String from;
-    protected String to;
-
-    public RequestMessage(String from, String to) {
-        this.from = from;
-        this.to = to;
-    }
+    protected Request request;
 
     public RequestMessage(Request request) {
-        this(request.getFrom().getName(), request.getTo().getName());
+        this.request = request;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public String getTo() {
-        return to;
+    public Request getRequest() {
+        return request;
     }
 
     @Override
@@ -41,15 +31,15 @@ public class RequestMessage extends Message {
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(to);
+        header.writeUTF(request.getTo().getName());
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
         body.writeShort(getType().ordinal());
-        body.writeUTF(from);
-        body.writeUTF(to);
+        body.writeUTF(request.getFrom().getName());
+        body.writeUTF(request.getTo().getName());
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -63,6 +53,6 @@ public class RequestMessage extends Message {
         String from = data.readUTF();
         String to = data.readUTF();
 
-        return new RequestMessage(from, to);
+        return new RequestMessage(new Request(from, to));
     }
 }
