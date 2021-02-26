@@ -28,6 +28,10 @@ public abstract class Message {
             return PlayerListMessage.resolve(data);
         }
 
+        else if (subChannel.equalsIgnoreCase("GetServer")) {
+            return GetServerMessage.resolve(data);
+        }
+
         return null;
     }
 }
