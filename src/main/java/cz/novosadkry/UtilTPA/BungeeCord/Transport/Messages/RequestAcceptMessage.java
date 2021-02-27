@@ -5,9 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
-import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Request.Request;
-import org.bukkit.Bukkit;
 
 public class RequestAcceptMessage extends RequestMessage {
     protected String server;
@@ -31,7 +29,7 @@ public class RequestAcceptMessage extends RequestMessage {
     }
 
     @Override
-    public void send() {
+    public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
         // Write ForwardToPlayer header
@@ -52,7 +50,7 @@ public class RequestAcceptMessage extends RequestMessage {
         header.writeShort(bodyBytes.length);
         header.write(bodyBytes);
 
-        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", header.toByteArray());
+        return header.toByteArray();
     }
 
     public static Message resolve(ByteArrayDataInput data) {

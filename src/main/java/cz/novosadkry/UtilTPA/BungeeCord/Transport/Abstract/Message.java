@@ -8,7 +8,11 @@ import cz.novosadkry.UtilTPA.Main;
 public abstract class Message {
     public abstract MessageType getType();
 
-    public abstract void send();
+    public void send() {
+        Main.getInstance().getBungeeDriver().sendMessage(this);
+    }
+
+    public abstract byte[] toBytes();
 
     public Message on(MessageListener callback) {
         BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();

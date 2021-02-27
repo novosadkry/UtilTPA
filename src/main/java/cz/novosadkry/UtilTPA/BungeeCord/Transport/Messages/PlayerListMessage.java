@@ -5,8 +5,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
-import cz.novosadkry.UtilTPA.Main;
-import org.bukkit.Bukkit;
 
 public class PlayerListMessage extends Message {
     protected String server;
@@ -35,14 +33,14 @@ public class PlayerListMessage extends Message {
     }
 
     @Override
-    public void send() {
+    public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
         // Write PlayerList header
         header.writeUTF("PlayerList");
         header.writeUTF(server);
 
-        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", header.toByteArray());
+        return header.toByteArray();
     }
 
     public static Message resolve(ByteArrayDataInput data) {

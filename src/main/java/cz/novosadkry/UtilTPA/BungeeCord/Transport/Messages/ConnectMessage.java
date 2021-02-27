@@ -5,7 +5,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
-import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.entity.Player;
 
 public class ConnectMessage extends Message {
@@ -27,14 +26,14 @@ public class ConnectMessage extends Message {
     }
 
     @Override
-    public void send() {
+    public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
         // Write Connect header
         header.writeUTF("Connect");
         header.writeUTF(server);
 
-        player.sendPluginMessage(Main.getInstance(), "BungeeCord", header.toByteArray());
+        return header.toByteArray();
     }
 
     public static Message resolve(ByteArrayDataInput data) {

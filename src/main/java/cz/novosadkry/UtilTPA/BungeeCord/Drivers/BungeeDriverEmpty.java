@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
 import org.bukkit.entity.Player;
 
@@ -7,6 +8,11 @@ public class BungeeDriverEmpty implements BungeeDriver {
     @Override
     public String getServerName() {
         return "";
+    }
+
+    @Override
+    public void initialize() {
+
     }
 
     @Override
@@ -26,6 +32,11 @@ public class BungeeDriverEmpty implements BungeeDriver {
 
     @Override
     public void unregisterListeners() {
+
+    }
+
+    @Override
+    public void sendMessage(Message msg) {
 
     }
 

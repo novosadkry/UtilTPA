@@ -26,6 +26,12 @@ public class BungeeDriverImpl implements BungeeDriver {
     }
 
     @Override
+    public void initialize() {
+        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
+    }
+
+    @Override
     public void askForServerName() {
         Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
             if (serverName != null)
@@ -60,6 +66,11 @@ public class BungeeDriverImpl implements BungeeDriver {
 
     private void notifyListeners(Message msg) {
         listeners.removeIf(l -> !l.onMessage(msg));
+    }
+
+    @Override
+    public void sendMessage(Message msg) {
+        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
     }
 
     @Override

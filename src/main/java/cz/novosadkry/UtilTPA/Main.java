@@ -59,15 +59,11 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
-        if (config.getBoolean("bungeecord")) {
-            getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", bungeeDriver);
-            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        }
-
+        getBungeeDriver().initialize();
+        getBungeeDriver().askForServerName();
         getBungeeDriver().registerListener(new PingMessageListener());
         getBungeeDriver().registerListener(new RequestMessageListener());
         getBungeeDriver().registerListener(new PlayerListMessageListener());
-        getBungeeDriver().askForServerName();
 
         getHeadCacheService().startCacheQueue();
         getHeadCacheService().startCacheRefresh();
