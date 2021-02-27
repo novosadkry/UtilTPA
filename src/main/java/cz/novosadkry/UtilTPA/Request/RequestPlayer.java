@@ -59,12 +59,12 @@ public class RequestPlayer {
 
         RequestPlayer p = (RequestPlayer) o;
 
-        return name.equals(p.name);
+        return name.equalsIgnoreCase(p.name);
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return name != null ? name.toLowerCase().hashCode() : 0;
     }
 
     @Override
