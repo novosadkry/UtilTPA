@@ -1,10 +1,11 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
+import cz.novosadkry.UtilTPA.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -116,6 +117,8 @@ public class RequestManager {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
 
+        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+
         from.onLocal(p -> {
             BackPersist.lastLoc.put(p, p.getLocation());
 
@@ -124,7 +127,7 @@ public class RequestManager {
         });
 
         from.onRemote(p -> new RequestAcceptMessage(request)
-                .setServer(BungeeDriver.getInstance().getServerName())
+                .setServer(bungeeDriver.getServerName())
                 .send());
 
         to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + request.getFrom()));

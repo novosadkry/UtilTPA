@@ -1,6 +1,8 @@
 package cz.novosadkry.UtilTPA;
 
-import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverEmpty;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverImpl;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PingMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PlayerListMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.RequestMessageListener;
@@ -18,17 +20,21 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
-    public static FileConfiguration config;
-    public static HeadCacheService headCacheService;
-
     private static Main instance;
+
+    private HeadCacheService headCacheService;
+    private BungeeDriver bungeeDriver;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+        super.onLoad();
+    }
 
     @Override
     public void onEnable() {
-        instance = this;
-
-        this.saveDefaultConfig();
-        config = this.getConfig();
+        FileConfiguration config = getConfig();
+        saveDefaultConfig();
 
         if (config.getBoolean("online-mode")) {
             headCacheService = new HeadCacheService(
@@ -38,27 +44,31 @@ public class Main extends JavaPlugin {
             );
         }
 
-        this.getCommand("tpa").setExecutor(new TpaExecutor());
-        this.getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
-        this.getCommand("tpdeny").setExecutor(new TpDenyExecutor());
-        this.getCommand("back").setExecutor(new BackExecutor());
+        bungeeDriver = config.getBoolean("bungeecord")
+                ? new BungeeDriverImpl()
+                : new BungeeDriverEmpty();
 
-        this.getServer().getPluginManager().registerEvents(new RequestInventoryClickEvent(), this);
-        this.getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinEvent(), this);
-        this.getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
-        this.getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
+        getCommand("tpa").setExecutor(new TpaExecutor());
+        getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
+        getCommand("tpdeny").setExecutor(new TpDenyExecutor());
+        getCommand("back").setExecutor(new BackExecutor());
 
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", BungeeDriver.getInstance());
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getServer().getPluginManager().registerEvents(new RequestInventoryClickEvent(), this);
+        getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinEvent(), this);
+        getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
+        getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
-        BungeeDriver.getInstance().registerListener(new PingMessageListener());
-        BungeeDriver.getInstance().registerListener(new RequestMessageListener());
-        BungeeDriver.getInstance().registerListener(new PlayerListMessageListener());
-        BungeeDriver.getInstance().askForServerName();
+        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", bungeeDriver);
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        if (headCacheService != null) {
-            headCacheService.startCacheQueue();
-            headCacheService.startCacheRefresh();
+        getBungeeDriver().registerListener(new PingMessageListener());
+        getBungeeDriver().registerListener(new RequestMessageListener());
+        getBungeeDriver().registerListener(new PlayerListMessageListener());
+        getBungeeDriver().askForServerName();
+
+        if (getHeadCacheService() != null) {
+            getHeadCacheService().startCacheQueue();
+            getHeadCacheService().startCacheRefresh();
         }
 
         super.onEnable();
@@ -68,12 +78,20 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         HandlerList.unregisterAll(this);
 
-        BungeeDriver.getInstance().unregisterListeners();
+        getBungeeDriver().unregisterListeners();
 
-        headCacheService.stopCacheQueue();
-        headCacheService.stopCacheRefresh();
+        getHeadCacheService().stopCacheQueue();
+        getHeadCacheService().stopCacheRefresh();
 
         super.onDisable();
+    }
+
+    public BungeeDriver getBungeeDriver() {
+        return bungeeDriver;
+    }
+
+    public HeadCacheService getHeadCacheService() {
+        return headCacheService;
     }
 
     public static Main getInstance() {

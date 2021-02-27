@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class HeadCachePlayerJoinEvent implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
-        HeadCacheService cacheService = Main.headCacheService;
+        HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
         cacheService.enqueueHead(e.getPlayer());
     }
 }

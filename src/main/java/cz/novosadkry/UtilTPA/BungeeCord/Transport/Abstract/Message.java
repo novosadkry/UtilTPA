@@ -1,8 +1,9 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract;
 
 import com.google.common.io.ByteArrayDataInput;
-import cz.novosadkry.UtilTPA.BungeeCord.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.*;
+import cz.novosadkry.UtilTPA.Main;
 
 public abstract class Message {
     public abstract MessageType getType();
@@ -10,7 +11,8 @@ public abstract class Message {
     public abstract void send();
 
     public Message on(MessageListener callback) {
-        BungeeDriver.getInstance().registerListener(callback);
+        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+        bungeeDriver.registerListener(callback);
         return this;
     }
 

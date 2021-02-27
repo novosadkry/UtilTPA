@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord;
+package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -8,32 +8,24 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.GetServerMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BungeeDriver implements PluginMessageListener {
-    private static BungeeDriver instance;
-
-    public static BungeeDriver getInstance() {
-        if (instance == null)
-            instance = new BungeeDriver();
-
-        return instance;
-    }
-
+public class BungeeDriverImpl implements BungeeDriver {
     private final List<MessageListener> listeners;
     private String serverName;
 
-    public BungeeDriver() {
+    public BungeeDriverImpl() {
         listeners = new ArrayList<>();
     }
 
+    @Override
     public String getServerName() {
         return serverName;
     }
 
+    @Override
     public void askForServerName() {
         Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
             if (serverName != null)
@@ -51,14 +43,17 @@ public class BungeeDriver implements PluginMessageListener {
         }, 20L);
     }
 
+    @Override
     public void registerListener(MessageListener listener) {
         listeners.add(listener);
     }
 
+    @Override
     public void unregisterListener(MessageListener listener) {
         listeners.remove(listener);
     }
 
+    @Override
     public void unregisterListeners() {
         listeners.clear();
     }

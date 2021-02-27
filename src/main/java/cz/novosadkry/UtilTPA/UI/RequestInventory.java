@@ -94,7 +94,7 @@ public class RequestInventory {
         int startIndex = page * getPagePlayerCount();
         int maxPlayerCount = Math.min(players.length - startIndex, getPagePlayerCount());
 
-        if (Main.config.getBoolean("online-mode"))
+        if (Main.getInstance().getConfig().getBoolean("online-mode"))
             setOnlineContent(players, startIndex, maxPlayerCount);
         else
             setOfflineContent(players, startIndex, maxPlayerCount);
@@ -104,7 +104,7 @@ public class RequestInventory {
     }
 
     private void setOnlineContent(Player[] players, int startIndex, int maxPlayerCount) {
-        HeadCacheService cacheService = Main.headCacheService;
+        HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {
