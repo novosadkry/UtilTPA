@@ -14,6 +14,8 @@ import cz.novosadkry.UtilTPA.Commands.TPA.TpDenyExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
 import cz.novosadkry.UtilTPA.Heads.HeadCachePlayerJoinEvent;
 import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
+import cz.novosadkry.UtilTPA.Heads.HeadCacheServiceEmpty;
+import cz.novosadkry.UtilTPA.Heads.HeadCacheServiceImpl;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
@@ -36,13 +38,12 @@ public class Main extends JavaPlugin {
         FileConfiguration config = getConfig();
         saveDefaultConfig();
 
-        if (config.getBoolean("online-mode")) {
-            headCacheService = new HeadCacheService(
-                    config.getLong("cache.expire"),
-                    config.getLong("cache.refresh"),
-                    config.getLong("cache.queue")
-            );
-        }
+        headCacheService = config.getBoolean("online-mode")
+                ? new HeadCacheServiceImpl(
+                        config.getLong("cache.expire"),
+                        config.getLong("cache.refresh"),
+                        config.getLong("cache.queue"))
+                : new HeadCacheServiceEmpty();
 
         bungeeDriver = config.getBoolean("bungeecord")
                 ? new BungeeDriverImpl()
@@ -58,18 +59,18 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
-        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", bungeeDriver);
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        if (config.getBoolean("bungeecord")) {
+            getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", bungeeDriver);
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        }
 
         getBungeeDriver().registerListener(new PingMessageListener());
         getBungeeDriver().registerListener(new RequestMessageListener());
         getBungeeDriver().registerListener(new PlayerListMessageListener());
         getBungeeDriver().askForServerName();
 
-        if (getHeadCacheService() != null) {
-            getHeadCacheService().startCacheQueue();
-            getHeadCacheService().startCacheRefresh();
-        }
+        getHeadCacheService().startCacheQueue();
+        getHeadCacheService().startCacheRefresh();
 
         super.onEnable();
     }

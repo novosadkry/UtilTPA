@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 public class BungeeDriverEmpty implements BungeeDriver {
     @Override
     public String getServerName() {
-        return null;
+        return "";
     }
 
     @Override
