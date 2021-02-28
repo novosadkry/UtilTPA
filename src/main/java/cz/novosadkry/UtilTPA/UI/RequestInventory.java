@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.UI;
 
-import cz.novosadkry.UtilTPA.Heads.HeadCacheService;
+import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

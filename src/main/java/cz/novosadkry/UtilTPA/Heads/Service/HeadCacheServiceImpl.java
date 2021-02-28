@@ -1,5 +1,6 @@
-package cz.novosadkry.UtilTPA.Heads;
+package cz.novosadkry.UtilTPA.Heads.Service;
 
+import cz.novosadkry.UtilTPA.Heads.Cache.HeadCache;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

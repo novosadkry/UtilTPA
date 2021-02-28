@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.Heads;
+package cz.novosadkry.UtilTPA.Heads.Service;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
