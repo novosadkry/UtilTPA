@@ -16,6 +16,7 @@ import cz.novosadkry.UtilTPA.Heads.Cache.HeadCachePlayerJoinEvent;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceImpl;
+import cz.novosadkry.UtilTPA.Request.RequestPlayerSpawnEvent;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickEvent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
@@ -54,6 +55,7 @@ public class Main extends JavaPlugin {
         getCommand("tpdeny").setExecutor(new TpDenyExecutor());
         getCommand("back").setExecutor(new BackExecutor());
 
+        getServer().getPluginManager().registerEvents(new RequestPlayerSpawnEvent(), this);
         getServer().getPluginManager().registerEvents(new RequestInventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinEvent(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
