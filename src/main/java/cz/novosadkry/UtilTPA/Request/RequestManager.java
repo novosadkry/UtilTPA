@@ -4,6 +4,7 @@ import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
+import cz.novosadkry.UtilTPA.Commands.Back.BackInfo;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import cz.novosadkry.UtilTPA.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -120,7 +121,7 @@ public class RequestManager {
         BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
 
         from.onLocal(p -> {
-            BackPersist.lastLoc.put(p, p.getLocation());
+            BackPersist.getLastLoc().put(p, new BackInfo(p.getLocation()));
 
             p.teleport(to.getPlayer().getLocation());
             p.sendMessage("§aHráč §e" + request.getTo() + " §apřijal tvůj request.");

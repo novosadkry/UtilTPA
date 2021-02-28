@@ -7,6 +7,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class BackPlayerDeathEvent implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        BackPersist.lastLoc.put(e.getEntity(), e.getEntity().getLocation());
+        BackPersist.getLastLoc().put(e.getEntity(), new BackInfo(e.getEntity().getLocation()));
     }
 }

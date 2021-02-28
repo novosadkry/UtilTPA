@@ -7,6 +7,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class BackPlayerQuitEvent implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        BackPersist.lastLoc.remove(e.getPlayer());
+        BackPersist.getLastLoc().remove(e.getPlayer());
     }
 }

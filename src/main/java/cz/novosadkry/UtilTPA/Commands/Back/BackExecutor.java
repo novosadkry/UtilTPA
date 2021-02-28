@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.Commands.Back;
 
-import org.bukkit.Location;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,11 +12,15 @@ public class BackExecutor implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            Location loc = BackPersist.lastLoc.remove(player);
+            BackInfo backInfo = BackPersist.getLastLoc().remove(player);
 
-            if (loc != null) {
-                player.teleport(loc);
+            if (backInfo.getLoc() != null) {
+                player.teleport(backInfo.getLoc());
                 sender.sendMessage("§aÚspěšně ses vrátil na svoji předešlou pozici");
+            }
+
+            else if (backInfo.getServer() != null) {
+                new ConnectMessage(player, backInfo.getServer()).send();
             }
 
             else
