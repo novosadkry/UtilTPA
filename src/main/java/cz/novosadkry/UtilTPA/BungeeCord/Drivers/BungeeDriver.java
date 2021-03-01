@@ -5,10 +5,12 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import java.util.List;
+
 public interface BungeeDriver extends PluginMessageListener {
     String getServerName();
 
-    String[] getPlayerList();
+    List<String> getPlayerList();
 
     void initialize();
 

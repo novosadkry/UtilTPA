@@ -59,6 +59,8 @@ public class RequestManager {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
 
+        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+
         if (!request.valid()) {
             from.onLocal(p -> p.sendMessage("§cPožadavek je neplatný!"));
             return;
@@ -74,10 +76,13 @@ public class RequestManager {
             return;
         }
 
-        // Player is probably on another server
         if (to.isRemote()) {
-            // TODO: Send message based on player list
-            new RequestMessage(request).send();
+            if (bungeeDriver.getPlayerList().contains(to.getName())) {
+                new RequestMessage(request).send();
+                from.onLocal(p -> p.sendMessage("§bPoslal si teleport request hráčovi §e" + to));
+            } else {
+                from.onLocal(p -> p.sendMessage("§cHráč neexistuje nebo je offline!"));
+            }
         }
 
         else {

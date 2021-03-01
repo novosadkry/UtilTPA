@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BungeeDriverImpl implements BungeeDriver {
@@ -31,8 +32,8 @@ public class BungeeDriverImpl implements BungeeDriver {
     }
 
     @Override
-    public String[] getPlayerList() {
-        return playerList;
+    public List<String> getPlayerList() {
+        return Arrays.asList(playerList);
     }
 
     @Override
