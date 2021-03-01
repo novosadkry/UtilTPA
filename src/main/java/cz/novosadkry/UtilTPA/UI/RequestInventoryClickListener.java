@@ -8,9 +8,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class RequestInventoryClickEvent implements Listener {
+public class RequestInventoryClickListener implements Listener {
     @EventHandler
-    public void OnRequestInventoryClick(InventoryClickEvent e) {
+    public void onClick(InventoryClickEvent e) {
         if (e.getInventory().getHolder() instanceof RequestInventoryHolder) {
             RequestInventoryHolder holder = (RequestInventoryHolder) e.getInventory().getHolder();
 

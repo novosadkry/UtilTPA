@@ -3,21 +3,19 @@ package cz.novosadkry.UtilTPA;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverEmpty;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverImpl;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PingMessageListener;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.PlayerListMessageListener;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners.RequestMessageListener;
+import cz.novosadkry.UtilTPA.Request.Listeners.RequestMessageListener;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
-import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathEvent;
-import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitEvent;
+import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathListener;
+import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitListener;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpAcceptExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpDenyExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
-import cz.novosadkry.UtilTPA.Heads.Cache.HeadCachePlayerJoinEvent;
+import cz.novosadkry.UtilTPA.Heads.Cache.HeadCachePlayerJoinListener;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceImpl;
-import cz.novosadkry.UtilTPA.Request.RequestPlayerSpawnEvent;
-import cz.novosadkry.UtilTPA.UI.RequestInventoryClickEvent;
+import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
+import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,16 +53,14 @@ public class Main extends JavaPlugin {
         getCommand("tpdeny").setExecutor(new TpDenyExecutor());
         getCommand("back").setExecutor(new BackExecutor());
 
-        getServer().getPluginManager().registerEvents(new RequestPlayerSpawnEvent(), this);
-        getServer().getPluginManager().registerEvents(new RequestInventoryClickEvent(), this);
-        getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinEvent(), this);
-        getServer().getPluginManager().registerEvents(new BackPlayerDeathEvent(), this);
-        getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
+        getServer().getPluginManager().registerEvents(new RequestPlayerSpawnListener(), this);
+        getServer().getPluginManager().registerEvents(new RequestInventoryClickListener(), this);
+        getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new BackPlayerDeathListener(), this);
+        getServer().getPluginManager().registerEvents(new BackPlayerQuitListener(), this);
 
         getBungeeDriver().initialize();
-        getBungeeDriver().registerListener(new PingMessageListener());
         getBungeeDriver().registerListener(new RequestMessageListener());
-        getBungeeDriver().registerListener(new PlayerListMessageListener());
 
         getHeadCacheService().initialize();
 

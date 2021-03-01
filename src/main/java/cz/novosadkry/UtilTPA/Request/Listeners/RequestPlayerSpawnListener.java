@@ -1,5 +1,8 @@
-package cz.novosadkry.UtilTPA.Request;
+package cz.novosadkry.UtilTPA.Request.Listeners;
 
+import cz.novosadkry.UtilTPA.Request.Request;
+import cz.novosadkry.UtilTPA.Request.RequestManager;
+import cz.novosadkry.UtilTPA.Request.RequestPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,7 +10,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.LinkedList;
 
-public class RequestPlayerSpawnEvent implements Listener {
+public class RequestPlayerSpawnListener implements Listener {
     @EventHandler
     public void onPlayerSpawnEvent(PlayerSpawnLocationEvent e) {
         RequestPlayer requestPlayer = new RequestPlayer(e.getPlayer());

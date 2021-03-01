@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Listeners;
+package cz.novosadkry.UtilTPA.Request.Listeners;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
