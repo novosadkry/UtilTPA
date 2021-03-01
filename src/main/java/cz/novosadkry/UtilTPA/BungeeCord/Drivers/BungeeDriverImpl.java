@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.GetServerMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +15,11 @@ import java.util.List;
 
 public class BungeeDriverImpl implements BungeeDriver {
     private final List<MessageListener> listeners;
+
     private String serverName;
+    private String[] playerList;
+
+    private boolean cancelTasks;
 
     public BungeeDriverImpl() {
         listeners = new ArrayList<>();
@@ -26,15 +31,22 @@ public class BungeeDriverImpl implements BungeeDriver {
     }
 
     @Override
+    public String[] getPlayerList() {
+        return playerList;
+    }
+
+    @Override
     public void initialize() {
+        askForServerName();
+        refreshPlayerList();
+
         Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
     }
 
-    @Override
-    public void askForServerName() {
+    private void askForServerName() {
         Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
-            if (serverName != null)
+            if (serverName != null || cancelTasks)
                 return;
 
             new GetServerMessage().on(msg -> {
@@ -46,6 +58,23 @@ public class BungeeDriverImpl implements BungeeDriver {
             }).send();
 
             askForServerName();
+        }, 20L);
+    }
+
+    private void refreshPlayerList() {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+            if (cancelTasks)
+                return;
+
+            new PlayerListMessage("ALL").on(msg -> {
+                if (!(msg instanceof PlayerListMessage))
+                    return true;
+
+                playerList = ((PlayerListMessage) msg).getPlayerList();
+                return false;
+            }).send();
+
+            refreshPlayerList();
         }, 20L);
     }
 
@@ -85,5 +114,11 @@ public class BungeeDriverImpl implements BungeeDriver {
             return;
 
         notifyListeners(msg);
+    }
+
+    @Override
+    public void terminate() {
+        cancelTasks = true;
+        unregisterListeners();
     }
 }

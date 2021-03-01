@@ -7,16 +7,16 @@ import org.bukkit.entity.Player;
 public class BungeeDriverEmpty implements BungeeDriver {
     @Override
     public String getServerName() {
-        return "";
+        return null;
+    }
+
+    @Override
+    public String[] getPlayerList() {
+        return null;
     }
 
     @Override
     public void initialize() {
-
-    }
-
-    @Override
-    public void askForServerName() {
 
     }
 
@@ -44,4 +44,7 @@ public class BungeeDriverEmpty implements BungeeDriver {
     public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
 
     }
+
+    @Override
+    public void terminate() {}
 }

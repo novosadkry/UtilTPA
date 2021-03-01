@@ -62,7 +62,6 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackPlayerQuitEvent(), this);
 
         getBungeeDriver().initialize();
-        getBungeeDriver().askForServerName();
         getBungeeDriver().registerListener(new PingMessageListener());
         getBungeeDriver().registerListener(new RequestMessageListener());
         getBungeeDriver().registerListener(new PlayerListMessageListener());
@@ -77,7 +76,7 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         HandlerList.unregisterAll(this);
 
-        getBungeeDriver().unregisterListeners();
+        getBungeeDriver().terminate();
 
         getHeadCacheService().stopCacheQueue();
         getHeadCacheService().stopCacheRefresh();

@@ -8,9 +8,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 public interface BungeeDriver extends PluginMessageListener {
     String getServerName();
 
-    void initialize();
+    String[] getPlayerList();
 
-    void askForServerName();
+    void initialize();
 
     void registerListener(MessageListener listener);
 
@@ -22,4 +22,6 @@ public interface BungeeDriver extends PluginMessageListener {
 
     @Override
     void onPluginMessageReceived(String channel, Player player, byte[] bytes);
+
+    void terminate();
 }
