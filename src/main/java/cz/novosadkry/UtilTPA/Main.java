@@ -66,8 +66,7 @@ public class Main extends JavaPlugin {
         getBungeeDriver().registerListener(new RequestMessageListener());
         getBungeeDriver().registerListener(new PlayerListMessageListener());
 
-        getHeadCacheService().startCacheQueue();
-        getHeadCacheService().startCacheRefresh();
+        getHeadCacheService().initialize();
 
         super.onEnable();
     }
@@ -77,9 +76,7 @@ public class Main extends JavaPlugin {
         HandlerList.unregisterAll(this);
 
         getBungeeDriver().terminate();
-
-        getHeadCacheService().stopCacheQueue();
-        getHeadCacheService().stopCacheRefresh();
+        getHeadCacheService().terminate();
 
         super.onDisable();
     }

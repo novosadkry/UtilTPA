@@ -8,11 +8,7 @@ public interface HeadCacheService {
 
     void enqueueHead(Player player);
 
-    void startCacheQueue();
+    void initialize();
 
-    void startCacheRefresh();
-
-    void stopCacheQueue();
-
-    void stopCacheRefresh();
+    void terminate();
 }

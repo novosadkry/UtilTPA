@@ -15,22 +15,12 @@ public class HeadCacheServiceEmpty implements HeadCacheService {
     }
 
     @Override
-    public void startCacheQueue() {
+    public void initialize() {
 
     }
 
     @Override
-    public void startCacheRefresh() {
-
-    }
-
-    @Override
-    public void stopCacheQueue() {
-
-    }
-
-    @Override
-    public void stopCacheRefresh() {
+    public void terminate() {
 
     }
 }

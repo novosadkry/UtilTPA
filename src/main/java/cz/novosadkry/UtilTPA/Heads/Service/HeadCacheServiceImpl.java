@@ -44,6 +44,11 @@ public class HeadCacheServiceImpl implements HeadCacheService {
     }
 
     @Override
+    public void initialize() {
+        startCacheQueue();
+        startCacheRefresh();
+    }
+
     public void startCacheQueue() {
         cacheQueueTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
             synchronized (queue) {
@@ -59,7 +64,6 @@ public class HeadCacheServiceImpl implements HeadCacheService {
         }, 0, cacheQueueTick);
     }
 
-    @Override
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
             synchronized (cache) {
@@ -82,13 +86,17 @@ public class HeadCacheServiceImpl implements HeadCacheService {
         }, 0, cacheRefreshTick);
     }
 
-    @Override
     public void stopCacheQueue() {
         cacheQueueTask.cancel();
     }
 
-    @Override
     public void stopCacheRefresh() {
         cacheRefreshTask.cancel();
+    }
+
+    @Override
+    public void terminate() {
+        stopCacheQueue();
+        stopCacheRefresh();
     }
 }
