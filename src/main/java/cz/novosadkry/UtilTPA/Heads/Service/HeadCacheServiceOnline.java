@@ -11,8 +11,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
 
-public class HeadCacheServiceImpl implements HeadCacheService {
-    public HeadCacheServiceImpl(long cacheDataTTL, long cacheRefreshTick, long cacheQueueTick) {
+public class HeadCacheServiceOnline implements HeadCacheService {
+    public HeadCacheServiceOnline(long cacheDataTTL, long cacheRefreshTick, long cacheQueueTick) {
         cache = new HeadCache(cacheDataTTL);
         queue = new LinkedList<>();
 

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 public class RequestInventory {
     private Inventory inventory;
@@ -94,16 +93,13 @@ public class RequestInventory {
         int startIndex = page * getPagePlayerCount();
         int maxPlayerCount = Math.min(players.length - startIndex, getPagePlayerCount());
 
-        if (Main.getInstance().getConfig().getBoolean("online-mode"))
-            setOnlineContent(players, startIndex, maxPlayerCount);
-        else
-            setOfflineContent(players, startIndex, maxPlayerCount);
-
+        setContent(players, startIndex, maxPlayerCount);
         setFooter(page, players.length, startIndex);
+
         currentPage = page;
     }
 
-    private void setOnlineContent(Player[] players, int startIndex, int maxPlayerCount) {
+    private void setContent(Player[] players, int startIndex, int maxPlayerCount) {
         HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
@@ -111,42 +107,6 @@ public class RequestInventory {
             Player player = players[startIndex + i];
 
             ItemStack skullItem = cacheService.getHead(player);
-            contents[i] = skullItem;
-        }
-
-        inventory.setContents(contents);
-    }
-
-    private void setOfflineContent(Player[] players, int startIndex, int maxPlayerCount) {
-        ItemStack[] contents = new ItemStack[getPagePlayerCount()];
-
-        for (int i = 0; i < maxPlayerCount; i++) {
-            Player player = players[startIndex + i];
-            Material mat = null;
-
-            switch (player.getUniqueId().hashCode() % 4) {
-                case 0:
-                    mat = Material.SKELETON_SKULL;
-                    break;
-                case 1:
-                    mat = Material.CREEPER_HEAD;
-                    break;
-                case 2:
-                    mat = Material.ZOMBIE_HEAD;
-                    break;
-                case 3:
-                    mat = Material.WITHER_SKELETON_SKULL;
-                    break;
-                default:
-                    mat = Material.PLAYER_HEAD;
-            }
-
-            ItemStack skullItem = new ItemStack(mat);
-
-            SkullMeta skullMeta = (SkullMeta)skullItem.getItemMeta();
-            skullMeta.setDisplayName(player.getName());
-
-            skullItem.setItemMeta(skullMeta);
             contents[i] = skullItem;
         }
 

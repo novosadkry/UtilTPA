@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BungeeDriverImpl implements BungeeDriver {
+public class BungeeDriverOnline implements BungeeDriver {
     private final List<MessageListener> listeners;
 
     private String serverName;
@@ -22,7 +22,7 @@ public class BungeeDriverImpl implements BungeeDriver {
 
     private boolean cancelTasks;
 
-    public BungeeDriverImpl() {
+    public BungeeDriverOnline() {
         listeners = new ArrayList<>();
     }
 

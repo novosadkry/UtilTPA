@@ -1,8 +1,8 @@
 package cz.novosadkry.UtilTPA;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverEmpty;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverImpl;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOffline;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOnline;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
@@ -15,8 +15,8 @@ import cz.novosadkry.UtilTPA.Commands.TPA.TpDenyExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
 import cz.novosadkry.UtilTPA.Heads.Cache.HeadCachePlayerJoinListener;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
-import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceEmpty;
-import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceImpl;
+import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOffline;
+import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOnline;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -41,15 +41,15 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
 
         headCacheService = config.getBoolean("online-mode")
-                ? new HeadCacheServiceImpl(
+                ? new HeadCacheServiceOnline(
                         config.getLong("cache.expire"),
                         config.getLong("cache.refresh"),
                         config.getLong("cache.queue"))
-                : new HeadCacheServiceEmpty();
+                : new HeadCacheServiceOffline();
 
         bungeeDriver = config.getBoolean("bungeecord")
-                ? new BungeeDriverImpl()
-                : new BungeeDriverEmpty();
+                ? new BungeeDriverOnline()
+                : new BungeeDriverOffline();
 
         getCommand("tpa").setExecutor(new TpaExecutor());
         getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
