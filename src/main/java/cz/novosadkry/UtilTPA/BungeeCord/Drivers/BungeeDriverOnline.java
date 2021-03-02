@@ -24,6 +24,7 @@ public class BungeeDriverOnline implements BungeeDriver {
 
     public BungeeDriverOnline() {
         listeners = new ArrayList<>();
+        playerList = new String[0];
     }
 
     @Override
