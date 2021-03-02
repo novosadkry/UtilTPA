@@ -3,6 +3,9 @@ package cz.novosadkry.UtilTPA;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverEmpty;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverImpl;
+import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
+import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
+import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestMessageListener;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathListener;
@@ -52,6 +55,10 @@ public class Main extends JavaPlugin {
         getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
         getCommand("tpdeny").setExecutor(new TpDenyExecutor());
         getCommand("back").setExecutor(new BackExecutor());
+
+        getCommand("tpa").setTabCompleter(new TpaTabCompleter());
+        getCommand("tpdeny").setTabCompleter(new TpDenyTabCompleter());
+        getCommand("tpaccept").setTabCompleter(new TpAcceptTabCompleter());
 
         getServer().getPluginManager().registerEvents(new RequestPlayerSpawnListener(), this);
         getServer().getPluginManager().registerEvents(new RequestInventoryClickListener(), this);
