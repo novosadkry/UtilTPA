@@ -7,15 +7,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TpaTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
-
         List<String> playerList = bungeeDriver.getPlayerList();
-        playerList.remove(sender.getName());
 
-        return playerList;
+        return playerList.stream()
+                .filter(p -> !p.equals(sender.getName()))
+                .collect(Collectors.toList());
     }
 }
