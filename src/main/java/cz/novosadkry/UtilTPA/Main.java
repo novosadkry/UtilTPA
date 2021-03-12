@@ -1,8 +1,10 @@
 package cz.novosadkry.UtilTPA;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOffline;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOnline;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOffline;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOnline;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete.*;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
@@ -40,16 +42,29 @@ public class Main extends JavaPlugin {
         FileConfiguration config = getConfig();
         saveDefaultConfig();
 
-        headCacheService = config.getBoolean("online-mode")
-                ? new HeadCacheServiceOnline(
-                        config.getLong("cache.expire"),
-                        config.getLong("cache.refresh"),
-                        config.getLong("cache.queue"))
-                : new HeadCacheServiceOffline();
+        MessageResolverPool messageResolvers = new MessageResolverPool()
+                .registerResolver(new GetServerMessageResolver())
+                .registerResolver(new PingMessageResolver())
+                .registerResolver(new PlayerListMessageResolver())
+                .registerResolver(new RequestAcceptMessageResolver())
+                .registerResolver(new RequestDenyMessageResolver())
+                .registerResolver(new RequestMessageResolver());
 
-        bungeeDriver = config.getBoolean("bungeecord")
-                ? new BungeeDriverOnline()
+        bungeeDriver = config.getBoolean("bungeecord.enabled")
+                ? new BungeeDriverOnline(
+                    config.getLong("bungeecord.playerlist-tick"),
+                    messageResolvers
+                )
                 : new BungeeDriverOffline();
+
+        headCacheService =
+                config.getBoolean("head-inventory.enabled") &&
+                config.getBoolean("head-inventory.online-mode")
+                    ? new HeadCacheServiceOnline(
+                        config.getLong("head-inventory.cache.expire-tick"),
+                        config.getLong("head-inventory.cache.refresh-tick"),
+                        config.getLong("head-inventory.cache.queue-tick"))
+                    : new HeadCacheServiceOffline();
 
         getCommand("tpa").setExecutor(new TpaExecutor());
         getCommand("tpaccept").setExecutor(new TpAcceptExecutor());

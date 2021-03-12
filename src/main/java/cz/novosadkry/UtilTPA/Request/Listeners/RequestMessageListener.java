@@ -1,43 +1,39 @@
 package cz.novosadkry.UtilTPA.Request.Listeners;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestAcceptMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 
 public class RequestMessageListener implements MessageListener {
     @Override
-    public boolean onMessage(Message msg) {
+    public void onMessage(Message msg) {
         if (msg instanceof RequestMessage)
             onMessage((RequestMessage) msg);
-
-        return true;
     }
 
-    public boolean onMessage(RequestMessage msg) {
+    public void onMessage(RequestMessage msg) {
         RequestManager requestManager = RequestManager.getInstance();
         Request request = msg.getRequest();
 
-        switch (msg.getType()) {
-            case REQUEST:
+        switch (msg.getName()) {
+            case "REQUEST":
                 requestManager.sendRequest(request);
                 break;
 
-            case REQUEST_ACCEPT:
+            case "REQUEST_ACCEPT":
                 RequestAcceptMessage acceptMsg = (RequestAcceptMessage) msg;
                 request.getFrom().onLocal(p -> new ConnectMessage(p, acceptMsg.getServer()).send());
                 break;
 
-            case REQUEST_DENY:
+            case "REQUEST_DENY":
                 RequestDenyMessage denyMsg = (RequestDenyMessage) msg;
                 request.getFrom().onLocal(p -> p.sendMessage(denyMsg.getReason()));
                 break;
         }
-
-        return true;
     }
 }

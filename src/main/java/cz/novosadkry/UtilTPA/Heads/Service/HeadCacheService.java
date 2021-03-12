@@ -1,12 +1,11 @@
 package cz.novosadkry.UtilTPA.Heads.Service;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public interface HeadCacheService {
-    ItemStack getHead(Player player);
+    ItemStack getHead(String player);
 
-    void enqueueHead(Player player);
+    void enqueueHead(String player);
 
     void initialize();
 

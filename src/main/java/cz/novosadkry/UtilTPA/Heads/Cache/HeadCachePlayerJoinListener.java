@@ -10,6 +10,6 @@ public class HeadCachePlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
         HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
-        cacheService.enqueueHead(e.getPlayer());
+        cacheService.enqueueHead(e.getPlayer().getName());
     }
 }

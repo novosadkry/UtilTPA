@@ -1,29 +1,32 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageEventHandler;
+import cz.novosadkry.UtilTPA.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.List;
 
-public interface BungeeDriver extends PluginMessageListener {
-    String getServerName();
+public abstract class BungeeDriver extends MessageEventHandler implements PluginMessageListener {
+    abstract public String getServerName();
 
-    List<String> getPlayerList();
+    abstract public List<String> getPlayerList();
 
-    void initialize();
+    public void initialize() {
+        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
+    }
 
-    void registerListener(MessageListener listener);
-
-    void unregisterListener(MessageListener listener);
-
-    void unregisterListeners();
-
-    void sendMessage(Message msg);
+    public void sendMessage(Message msg) {
+        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
+    }
 
     @Override
-    void onPluginMessageReceived(String channel, Player player, byte[] bytes);
+    abstract public void onPluginMessageReceived(String channel, Player player, byte[] bytes);
 
-    void terminate();
+    public void terminate() {
+        unregisterListeners();
+    }
 }

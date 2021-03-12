@@ -1,16 +1,15 @@
 package cz.novosadkry.UtilTPA.Heads.Service;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class HeadCacheServiceOffline implements HeadCacheService {
     @Override
-    public ItemStack getHead(Player player) {
+    public ItemStack getHead(String player) {
         Material mat = null;
 
-        switch (player.getUniqueId().hashCode() % 4) {
+        switch (player.hashCode() % 4) {
             case 0:
                 mat = Material.SKELETON_SKULL;
                 break;
@@ -30,14 +29,14 @@ public class HeadCacheServiceOffline implements HeadCacheService {
         ItemStack skullItem = new ItemStack(mat);
 
         SkullMeta skullMeta = (SkullMeta)skullItem.getItemMeta();
-        skullMeta.setDisplayName(player.getName());
+        skullMeta.setDisplayName(player);
 
         skullItem.setItemMeta(skullMeta);
         return skullItem;
     }
 
     @Override
-    public void enqueueHead(Player player) {
+    public void enqueueHead(String player) {
 
     }
 

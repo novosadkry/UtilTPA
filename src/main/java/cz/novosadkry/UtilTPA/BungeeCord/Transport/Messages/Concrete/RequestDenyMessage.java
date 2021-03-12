@@ -1,10 +1,7 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
 import cz.novosadkry.UtilTPA.Request.Request;
 
 public class RequestDenyMessage extends RequestMessage {
@@ -24,11 +21,6 @@ public class RequestDenyMessage extends RequestMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.REQUEST_DENY;
-    }
-
-    @Override
     public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
@@ -40,7 +32,7 @@ public class RequestDenyMessage extends RequestMessage {
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeShort(getType().ordinal());
+        body.writeUTF("REQUEST_DENY");
         body.writeUTF(request.getFrom().getName());
         body.writeUTF(request.getTo().getName());
         body.writeUTF(reason);
@@ -53,12 +45,8 @@ public class RequestDenyMessage extends RequestMessage {
         return header.toByteArray();
     }
 
-    public static Message resolve(ByteArrayDataInput data) {
-        String from = data.readUTF();
-        String to = data.readUTF();
-        String reason = data.readUTF();
-
-        return new RequestDenyMessage(new Request(from, to))
-                .setReason(reason);
+    @Override
+    public String getName() {
+        return "REQUEST_DENY";
     }
 }

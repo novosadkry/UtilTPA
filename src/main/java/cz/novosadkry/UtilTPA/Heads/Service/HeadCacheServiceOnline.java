@@ -1,27 +1,26 @@
 package cz.novosadkry.UtilTPA.Heads.Service;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Heads.Cache.HeadCache;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HeadCacheServiceOnline implements HeadCacheService {
     public HeadCacheServiceOnline(long cacheDataTTL, long cacheRefreshTick, long cacheQueueTick) {
         cache = new HeadCache(cacheDataTTL);
-        queue = new LinkedList<>();
+        queue = new ConcurrentLinkedQueue<>();
 
         this.cacheRefreshTick = cacheRefreshTick;
         this.cacheQueueTick = cacheQueueTick;
     }
 
     private final HeadCache cache;
-    private final Queue<Player> queue;
+    private final Queue<String> queue;
 
     private BukkitTask cacheRefreshTask;
     private BukkitTask cacheQueueTask;
@@ -30,17 +29,19 @@ public class HeadCacheServiceOnline implements HeadCacheService {
     public final long cacheQueueTick;
 
     @Override
-    public ItemStack getHead(Player player) {
-        synchronized (cache) {
-            return cache.getHead(player);
-        }
+    public ItemStack getHead(String player) {
+        return cache.getHead(player);
+
+    }
+
+    public void removeHead(String player) {
+        cache.removeHead(player);
     }
 
     @Override
-    public void enqueueHead(Player player) {
-        synchronized (queue) {
+    public void enqueueHead(String player) {
+        if (!queue.contains(player))
             queue.add(player);
-        }
     }
 
     @Override
@@ -51,37 +52,24 @@ public class HeadCacheServiceOnline implements HeadCacheService {
 
     public void startCacheQueue() {
         cacheQueueTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
-            synchronized (queue) {
-                if (queue.peek() != null) {
-                    Player player = queue.poll();
-
-                    synchronized (cache) {
-                        if (!cache.getData().containsKey(player.getUniqueId()))
-                            cache.cacheHead(player);
-                    }
-                }
+            if (queue.peek() != null) {
+                String player = queue.poll();
+                cache.cacheHead(player);
             }
         }, 0, cacheQueueTick);
     }
 
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
-            synchronized (cache) {
-                LinkedList<UUID> toRemove = new LinkedList<UUID>();
+            BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
 
-                cache.getData().forEach((k, v) -> {
-                    if (v.ttl < System.currentTimeMillis()) {
-                        Player player = Bukkit.getPlayer(k);
+            List<String> playerList = bungeeDriver.getPlayerList();
+            List<String> removed = cache.removeExpired();
 
-                        if (player != null && player.isOnline())
-                            cache.cacheHead(player);
-                        else
-                            toRemove.add(k);
-                    }
-                });
-
-                for (UUID k : toRemove)
-                    cache.getData().remove(k);
+            for (String player : removed)
+            {
+                if (playerList.contains(player))
+                    enqueueHead(player);
             }
         }, 0, cacheRefreshTick);
     }

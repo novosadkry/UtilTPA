@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.UI;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
@@ -11,9 +12,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class RequestInventory {
     private Inventory inventory;
-    private String inventoryName;
-
-    private Player owner;
+    private final String inventoryName;
+    private final Player owner;
 
     private int currentPage;
     private boolean shouldReopen;
@@ -55,13 +55,16 @@ public class RequestInventory {
     }
 
     public static int getPageSizeAdaptive() {
+        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+
         return (int)((
             Math.ceil(
                 Math.min(
-                    (float)(Bukkit.getOnlinePlayers().size() - 1) / 9,
+                    (float)(bungeeDriver.getPlayerList().size() - 1) / 9,
                     5
                 )
-            ) + 1) * 9);
+            ) + 1) * 9
+        );
     }
 
     public void resizeAdaptive() {
@@ -82,10 +85,11 @@ public class RequestInventory {
     }
 
     public void setCurrentPage(int page) {
-        Player[] players = Bukkit.getOnlinePlayers()
-                .stream()
-                .filter(p -> p != owner)
-                .toArray(Player[]::new);
+        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+
+        String[] players = bungeeDriver.getPlayerList().stream()
+                .filter(p -> !p.equals(owner.getName()))
+                .toArray(String[]::new);
 
         if (getPageSizeAdaptive() != getPageSize())
             resizeAdaptive();
@@ -99,12 +103,12 @@ public class RequestInventory {
         currentPage = page;
     }
 
-    private void setContent(Player[] players, int startIndex, int maxPlayerCount) {
+    private void setContent(String[] players, int startIndex, int maxPlayerCount) {
         HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {
-            Player player = players[startIndex + i];
+            String player = players[startIndex + i];
 
             ItemStack skullItem = cacheService.getHead(player);
             contents[i] = skullItem;

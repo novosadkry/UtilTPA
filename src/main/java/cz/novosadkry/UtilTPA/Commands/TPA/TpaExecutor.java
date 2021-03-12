@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
+import cz.novosadkry.UtilTPA.Config;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.UI.RequestInventory;
@@ -21,7 +22,7 @@ public class TpaExecutor implements CommandExecutor {
                 requestManager.sendRequest(request);
             }
 
-            else if (args.length == 0)
+            else if (args.length == 0 && Config.getBoolean("head-inventory.enabled"))
                 new RequestInventory(player).openInventory();
 
             else

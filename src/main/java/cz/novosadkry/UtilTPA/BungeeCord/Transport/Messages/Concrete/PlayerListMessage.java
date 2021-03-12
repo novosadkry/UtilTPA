@@ -1,10 +1,8 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 
 public class PlayerListMessage extends Message {
     protected String server;
@@ -18,18 +16,13 @@ public class PlayerListMessage extends Message {
         return playerList;
     }
 
-    private PlayerListMessage setPlayerList(String[] playerList) {
+    public PlayerListMessage setPlayerList(String[] playerList) {
         this.playerList = playerList;
         return this;
     }
 
     public PlayerListMessage(String server) {
         this.server = server;
-    }
-
-    @Override
-    public MessageType getType() {
-        return MessageType.PLAYER_LIST;
     }
 
     @Override
@@ -43,10 +36,8 @@ public class PlayerListMessage extends Message {
         return header.toByteArray();
     }
 
-    public static Message resolve(ByteArrayDataInput data) {
-        String server = data.readUTF();
-        String[] playerList = data.readUTF().split(", ");
-
-        return new PlayerListMessage(server).setPlayerList(playerList);
+    @Override
+    public String getName() {
+        return "PLAYER_LIST";
     }
 }

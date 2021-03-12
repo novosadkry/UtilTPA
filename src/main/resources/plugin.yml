@@ -1,8 +1,8 @@
 name: UtilTPA
 author: novosadkry
 main: cz.novosadkry.UtilTPA.Main
-version: 1.2
-api-version: 1.15
+version: 2.0
+api-version: 1.16
 
 commands:
   tpa:

@@ -1,10 +1,8 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 import org.bukkit.entity.Player;
 
 public class ConnectMessage extends Message {
@@ -21,11 +19,6 @@ public class ConnectMessage extends Message {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.CONNECT;
-    }
-
-    @Override
     public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
@@ -36,7 +29,8 @@ public class ConnectMessage extends Message {
         return header.toByteArray();
     }
 
-    public static Message resolve(ByteArrayDataInput data) {
-        return null;
+    @Override
+    public String getName() {
+        return "CONNECT";
     }
 }

@@ -23,11 +23,10 @@ public class RequestInventoryClickListener implements Listener {
             if (meta instanceof SkullMeta) {
                 SkullMeta skullMeta = (SkullMeta)meta;
 
-                Player target = Bukkit.getPlayerExact(skullMeta.getDisplayName());
+                String target = skullMeta.getDisplayName();
                 Player sender = (Player)e.getWhoClicked();
 
-                if (target != null)
-                    sender.performCommand("tpa " + target.getName());
+                sender.performCommand("tpa " + target);
 
                 e.getWhoClicked().closeInventory();
             }

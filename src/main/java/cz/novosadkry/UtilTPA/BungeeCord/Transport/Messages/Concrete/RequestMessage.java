@@ -1,10 +1,8 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 import cz.novosadkry.UtilTPA.Request.Request;
 
 public class RequestMessage extends Message {
@@ -19,11 +17,6 @@ public class RequestMessage extends Message {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.REQUEST;
-    }
-
-    @Override
     public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
@@ -35,7 +28,7 @@ public class RequestMessage extends Message {
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeShort(getType().ordinal());
+        body.writeUTF("REQUEST");
         body.writeUTF(request.getFrom().getName());
         body.writeUTF(request.getTo().getName());
 
@@ -47,10 +40,8 @@ public class RequestMessage extends Message {
         return header.toByteArray();
     }
 
-    public static Message resolve(ByteArrayDataInput data) {
-        String from = data.readUTF();
-        String to = data.readUTF();
-
-        return new RequestMessage(new Request(from, to));
+    @Override
+    public String getName() {
+        return "REQUEST";
     }
 }

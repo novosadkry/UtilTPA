@@ -3,72 +3,107 @@ package cz.novosadkry.UtilTPA.Heads.Cache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import org.bukkit.Bukkit;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HeadCache {
-    public static class HeadCacheData {
-        public String value;
-        public long ttl;
-    }
-
     public final long cacheDataTTL;
-    private final Map<UUID, HeadCacheData> cache;
+    private final Map<String, HeadCacheItem> cache;
 
     public HeadCache(long cacheDataTTL) {
-        cache = new HashMap<>();
-
         this.cacheDataTTL = cacheDataTTL;
+        cache = new ConcurrentHashMap<>();
     }
 
-    public Map<UUID, HeadCacheData> getData() {
+    public Map<String, HeadCacheItem> getData() {
         return cache;
     }
 
-    @SuppressWarnings("deprecation")
-    public ItemStack getHead(Player player) {
+    public boolean hasHead(String player) {
+        return cache.containsKey(player);
+    }
+
+    public ItemStack getHead(String player) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        HeadCacheData cacheData = cache.get(player.getUniqueId());
+        HeadCacheItem cacheItem = cache.get(player);
 
-        if (cacheData != null && cacheData.value != null) {
-            UUID hashAsId = new UUID(cacheData.value.hashCode(), cacheData.value.hashCode());
+        if (cacheItem != null && cacheItem.getValue() != null) {
+            GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 
-            return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}, " +
-                        "SkullOwner:{Id:\"" + hashAsId + "\"," +
-                        "Properties:{textures:[{Value:\"" + cacheData.value + "\"}]}}}"
-            );
+            PropertyMap propertyMap = profile.getProperties();
+            propertyMap.put("textures", new Property("textures", cacheItem.getValue()));
+
+            ItemMeta headMeta = head.getItemMeta();
+            headMeta.setDisplayName(player);
+
+            try {
+                Field headMetaProfileField = headMeta.getClass().getDeclaredField("profile");
+                headMetaProfileField.setAccessible(true);
+                headMetaProfileField.set(headMeta, profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            head.setItemMeta(headMeta);
         }
 
         else {
-            String defaultSkin = (player.getUniqueId().hashCode() % 2 != 0)
+            String defaultSkin = (player.hashCode() % 2 != 0)
                     ? "MHF_Alex"
                     : "MHF_Steve";
 
-            return Bukkit.getUnsafe().modifyItemStack(head,
-                    "{display:{Name:'{\"text\":\"" + player.getName() + "\"}'}," +
-                        "SkullOwner:\"" + defaultSkin + "\"}"
-            );
+            GameProfile profile = new GameProfile(UUID.randomUUID(), defaultSkin);
+
+            ItemMeta headMeta = head.getItemMeta();
+            headMeta.setDisplayName(player);
+
+            try {
+                Field headMetaProfileField = headMeta.getClass().getDeclaredField("profile");
+                headMetaProfileField.setAccessible(true);
+                headMetaProfileField.set(headMeta, profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            head.setItemMeta(headMeta);
         }
+
+        return head;
     }
 
-    public void cacheHead(Player player) {
-        if (!cache.containsKey(player.getUniqueId()))
-            cache.put(player.getUniqueId(), new HeadCacheData());
+    public void removeHead(String player) {
+        cache.remove(player);
+    }
 
-        HeadCacheData cacheData = cache.get(player.getUniqueId());
-        cacheData.value = getHeadValue(player.getName());
-        cacheData.ttl = System.currentTimeMillis() + cacheDataTTL;
+    public void cacheHead(String player) {
+        String value = getHeadValue(player);
+        long ttl = System.currentTimeMillis() + cacheDataTTL;
+
+        cache.put(player, new HeadCacheItem(value, ttl));
+    }
+
+    public List<String> removeExpired() {
+        List<String> toRemove = new ArrayList<>();
+
+        cache.forEach((k, v) -> {
+            if (v.getTTL() < System.currentTimeMillis())
+                toRemove.add(k);
+        });
+
+        for (String k : toRemove)
+            cache.remove(k);
+
+        return toRemove;
     }
 
     private String getHeadValue(String name) {
@@ -87,7 +122,7 @@ public class HeadCache {
                     .getAsJsonObject()
                     .get("value").getAsString();
 
-            String decoded = new String(Base64.decode(value));
+            String decoded = new String(Base64.getDecoder().decode(value));
             json = gson.fromJson(decoded, JsonObject.class);
 
             String skinUrl = json.getAsJsonObject("textures")
@@ -95,7 +130,7 @@ public class HeadCache {
                     .get("url").getAsString();
 
             byte[] headValue = ("{\"textures\":{\"SKIN\":{\"url\":\"" + skinUrl + "\"}}}").getBytes();
-            return Base64.encode(headValue);
+            return new String(Base64.getEncoder().encode(headValue));
         } catch (Exception ignored) { }
 
         return null;

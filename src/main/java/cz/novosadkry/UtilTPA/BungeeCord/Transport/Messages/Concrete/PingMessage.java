@@ -1,10 +1,8 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Abstract.MessageType;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 
 // Example
 public class PingMessage extends Message {
@@ -31,11 +29,6 @@ public class PingMessage extends Message {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.PING;
-    }
-
-    @Override
     public byte[] toBytes() {
         ByteArrayDataOutput header = ByteStreams.newDataOutput();
 
@@ -47,7 +40,7 @@ public class PingMessage extends Message {
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeShort(getType().ordinal());
+        body.writeUTF("PING");
         body.writeUTF(from);
         body.writeUTF(to);
         body.writeUTF(message);
@@ -60,11 +53,8 @@ public class PingMessage extends Message {
         return header.toByteArray();
     }
 
-    public static Message resolve(ByteArrayDataInput data) {
-        String from = data.readUTF();
-        String to = data.readUTF();
-        String message = data.readUTF();
-
-        return new PingMessage(from, to, message);
+    @Override
+    public String getName() {
+        return "PING";
     }
 }
