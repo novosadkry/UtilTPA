@@ -6,6 +6,7 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessa
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
+import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 
@@ -27,7 +28,10 @@ public class RequestMessageListener implements MessageListener {
 
             case "REQUEST_ACCEPT":
                 RequestAcceptMessage acceptMsg = (RequestAcceptMessage) msg;
-                request.getFrom().onLocal(p -> new ConnectMessage(p, acceptMsg.getServer()).send());
+                request.getFrom().onLocal(p ->
+                    new ConnectMessage(p, acceptMsg.getServer())
+                        .send(Main.getInstance().getBungeeDriver())
+                );
                 break;
 
             case "REQUEST_DENY":

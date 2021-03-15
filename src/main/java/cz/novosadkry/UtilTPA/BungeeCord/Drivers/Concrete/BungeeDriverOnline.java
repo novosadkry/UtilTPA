@@ -61,7 +61,7 @@ public class BungeeDriverOnline extends BungeeDriver {
                     return;
 
                 serverName = ((GetServerMessage) msg).getServer();
-            }).send();
+            }).send(this);
 
             askForServerName();
         }, serverNameTick);
@@ -77,7 +77,7 @@ public class BungeeDriverOnline extends BungeeDriver {
                     return;
 
                 playerList = ((PlayerListMessage) msg).getPlayerList();
-            }).send();
+            }).send(this);
 
             refreshPlayerList();
         }, playerListTick);

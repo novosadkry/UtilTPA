@@ -4,8 +4,8 @@ import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Main;
 
 public abstract class Message {
-    public void send() {
-        Main.getInstance().getBungeeDriver().sendMessage(this);
+    public void send(BungeeDriver driver) {
+        driver.sendMessage(this);
     }
 
     public abstract byte[] toBytes();

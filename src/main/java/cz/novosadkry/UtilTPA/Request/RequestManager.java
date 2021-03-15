@@ -71,7 +71,7 @@ public class RequestManager {
         {
             from.onRemote(p -> new RequestDenyMessage(request)
                     .setReason("§cTomuhle hráči už jsi request poslal!")
-                    .send());
+                    .send(Main.getInstance().getBungeeDriver()));
 
             from.onLocal(p -> p.sendMessage("§cTomuhle hráči už jsi request poslal!"));
             return;
@@ -79,8 +79,10 @@ public class RequestManager {
 
         if (to.isRemote()) {
             if (bungeeDriver.getPlayerList().contains(to.getName())) {
-                new RequestMessage(request).send();
-                from.onLocal(p -> p.sendMessage("§bPoslal si teleport request hráčovi §e" + to));
+                new RequestMessage(request)
+                        .send(Main.getInstance().getBungeeDriver());
+
+                from.onLocal(p -> p.sendMessage("§bPoslal jsi teleport request hráčovi §e" + to));
             } else {
                 from.onLocal(p -> p.sendMessage("§cHráč neexistuje nebo je offline!"));
             }
@@ -107,7 +109,7 @@ public class RequestManager {
                     .append(tpDeny);
 
             to.onLocal(p -> p.spigot().sendMessage(targetMsg.create()));
-            from.onLocal(p -> p.sendMessage("§bPoslal si teleport request hráčovi §e" + to));
+            from.onLocal(p -> p.sendMessage("§bPoslal jsi teleport request hráčovi §e" + to));
         }
     }
 
@@ -119,11 +121,11 @@ public class RequestManager {
         getAwaitedPlayer(from).remove(request);
 
         from.onLocal(p -> p.sendMessage("§cHráč §e"+ to +"§c neodpověděl na tvůj request."));
-        to.onLocal(p -> p.sendMessage("§cNeodpověděl si na request hráče §e"+ from));
+        to.onLocal(p -> p.sendMessage("§cNeodpověděl jsi na request hráče §e"+ from));
 
         from.onRemote(p -> new RequestDenyMessage(request)
                 .setReason("§cHráč §e"+ to +"§c neodpověděl na tvůj request.")
-                .send());
+                .send(Main.getInstance().getBungeeDriver()));
     }
 
     public void acceptRequest(Request request) {
@@ -145,7 +147,7 @@ public class RequestManager {
 
             new RequestAcceptMessage(request)
                     .setServer(bungeeDriver.getServerName())
-                    .send();
+                    .send(Main.getInstance().getBungeeDriver());
         });
 
         to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + from));
@@ -163,7 +165,7 @@ public class RequestManager {
 
         from.onRemote(p -> new RequestDenyMessage(request)
                 .setReason("§cHráč §e" + to + " §codmítnul tvůj request.")
-                .send());
+                .send(Main.getInstance().getBungeeDriver()));
 
         request.cancelCountdown();
     }
