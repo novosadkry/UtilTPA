@@ -20,6 +20,7 @@ import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOffline;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOnline;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
+import cz.novosadkry.UtilTPA.Localization.Locale;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
@@ -41,6 +42,8 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         FileConfiguration config = getConfig();
         saveDefaultConfig();
+
+        Locale.getInstance().load();
 
         MessageResolverPool messageResolvers = new MessageResolverPool()
                 .registerResolver(new GetServerMessageResolver())

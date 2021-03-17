@@ -1,0 +1,48 @@
+requests:
+  error:
+    invalid: "§cPožadavek je neplatný!"
+    alreadySent: "§cTomuhle hráči už jsi request poslal!"
+    hasNone: "§cNemáš žádné příchozí requesty!"
+    hasNoneFrom: "§cNemáš žádné příchozí requesty od hráče §e{player}"
+
+  hover:
+    accept: "Kliknutím příjmeš request"
+    deny: "Kliknutím odmítneš request"
+
+  send:
+    from: "§bPoslal jsi teleport request hráčovi §e{player}"
+    to: |
+
+      §bByl ti poslán teleport request od hráče §e{player}
+      §bNa odpověď máš §e{timeout} §bsekund
+
+      §bPro příjmutí napiš {tpaccept}
+      §bPro odmítnutí napiš {tpdeny}
+
+  timeout:
+    from: "§cHráč §e{player}§c neodpověděl na tvůj request."
+    to: "§cNeodpověděl jsi na request hráče §e{player}"
+
+  accept:
+    from: "§aHráč §e{player}§a přijal tvůj request."
+    to: "§aPřijal jsi request hráče §e{player}"
+
+  deny:
+    from: "§cHráč §e{player}§c odmítnul tvůj request."
+    to: "§cOdmítnul jsi request hráče §e{player}"
+
+tpa:
+  invalidArgs: "§cZadal jsi nesprávný počet argumentů!"
+  invalidSender: "Tento prikaz nelze vyvolat z konzole"
+
+back:
+  success: "§aÚspěšně ses vrátil na svoji předešlou pozici"
+  failure: "§cNení pozice, na kterou by ses mohl vrátit!"
+
+inventory:
+  name: "Seznam hráčů"
+
+  pages:
+    next: "Další"
+    previous: "Zpět"
+    current: "Strana {current} z {total}"

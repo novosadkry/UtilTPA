@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
+
 public class TpaExecutor implements CommandExecutor {
 
     @Override
@@ -26,11 +28,11 @@ public class TpaExecutor implements CommandExecutor {
                 new RequestInventory(player).openInventory();
 
             else
-                player.sendMessage("§cZadal si nesprávný počet argumentů!");
+                player.sendMessage(tl("tpa.invalidArgs"));
         }
 
         else
-            sender.sendMessage("Tento prikaz nelze vyvolat z konzole");
+            sender.sendMessage(tl("tpa.invalidSender"));
 
         return true;
     }

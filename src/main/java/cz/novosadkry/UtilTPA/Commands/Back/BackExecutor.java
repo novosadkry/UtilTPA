@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
+
 public class BackExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -17,7 +19,7 @@ public class BackExecutor implements CommandExecutor {
 
             if (backInfo.getLoc() != null) {
                 player.teleport(backInfo.getLoc());
-                sender.sendMessage("§aÚspěšně ses vrátil na svoji předešlou pozici");
+                sender.sendMessage(tl("back.success"));
             }
 
             else if (backInfo.getServer() != null) {
@@ -26,7 +28,7 @@ public class BackExecutor implements CommandExecutor {
             }
 
             else
-                sender.sendMessage("§cNení pozice, na kterou by ses mohl vrátit!");
+                sender.sendMessage(tl("back.failure"));
         }
 
         return true;

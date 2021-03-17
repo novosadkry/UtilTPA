@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import cz.novosadkry.UtilTPA.Log;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,7 +52,7 @@ public class HeadCache {
                 headMetaProfileField.setAccessible(true);
                 headMetaProfileField.set(headMeta, profile);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.severe(e);
             }
 
             head.setItemMeta(headMeta);
@@ -72,7 +73,7 @@ public class HeadCache {
                 headMetaProfileField.setAccessible(true);
                 headMetaProfileField.set(headMeta, profile);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.severe(e);
             }
 
             head.setItemMeta(headMeta);

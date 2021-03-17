@@ -9,7 +9,6 @@ public class ResolveResult {
 
     public ResolveResult(boolean success) {
         this(success, null, null);
-        assert !success;
     }
 
     public ResolveResult(Exception exception) {

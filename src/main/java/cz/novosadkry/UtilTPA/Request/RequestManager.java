@@ -6,14 +6,14 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyM
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackInfo;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
+import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Main;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.*;
+
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
 
 public class RequestManager {
     private static RequestManager manager;
@@ -63,17 +63,17 @@ public class RequestManager {
         BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
 
         if (!request.valid()) {
-            from.onLocal(p -> p.sendMessage("§cPožadavek je neplatný!"));
+            from.onLocal(p -> p.sendMessage(tl("requests.error.invalid")));
             return;
         }
 
         if (hasRequest(to, request))
         {
             from.onRemote(p -> new RequestDenyMessage(request)
-                    .setReason("§cTomuhle hráči už jsi request poslal!")
+                    .setReason(tl("requests.error.alreadySent"))
                     .send(Main.getInstance().getBungeeDriver()));
 
-            from.onLocal(p -> p.sendMessage("§cTomuhle hráči už jsi request poslal!"));
+            from.onLocal(p -> p.sendMessage(tl("requests.error.alreadySent")));
             return;
         }
 
@@ -82,9 +82,9 @@ public class RequestManager {
                 new RequestMessage(request)
                         .send(Main.getInstance().getBungeeDriver());
 
-                from.onLocal(p -> p.sendMessage("§bPoslal jsi teleport request hráčovi §e" + to));
+                from.onLocal(p -> p.sendMessage(tl("requests.send.from", new PlaceHolder("player", to))));
             } else {
-                from.onLocal(p -> p.sendMessage("§cHráč neexistuje nebo je offline!"));
+                from.onLocal(p -> p.sendMessage(tl("requests.error.invalid")));
             }
         }
 
@@ -96,20 +96,19 @@ public class RequestManager {
             TextComponent tpDeny = new TextComponent("§4/tpdeny");
 
             tpAccept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + from));
-            tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Kliknutím příjmeš request")));
+            tpAccept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(tl("requests.hover.accept"))));
             tpDeny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny  " + from));
-            tpDeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Kliknutím odmítneš request")));
+            tpDeny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(tl("requests.hover.deny"))));
 
-            ComponentBuilder targetMsg = new ComponentBuilder("\n§bByl ti poslán teleport request od hráče ")
-                    .append("§e" + from)
-                    .append("\n§bNa odpověd' máš §e20 §bsekund")
-                    .append("\n\n§bPro příjmutí napiš ")
-                    .append(tpAccept)
-                    .append("\n§bPro odmítnutí napiš ")
-                    .append(tpDeny);
+            BaseComponent[] msg = tlc("requests.send.to",
+                    new PlaceHolder("player", from),
+                    new PlaceHolder("timeout", "20"),
+                    new PlaceHolder("tpaccept", tpAccept),
+                    new PlaceHolder("tpdeny", tpDeny)
+            );
 
-            to.onLocal(p -> p.spigot().sendMessage(targetMsg.create()));
-            from.onLocal(p -> p.sendMessage("§bPoslal jsi teleport request hráčovi §e" + to));
+            to.onLocal(p -> p.spigot().sendMessage(msg));
+            from.onLocal(p -> p.sendMessage(tl("requests.send.from", new PlaceHolder("player", to))));
         }
     }
 
@@ -120,11 +119,11 @@ public class RequestManager {
         getAllPlayer(to).remove(request);
         getAwaitedPlayer(from).remove(request);
 
-        from.onLocal(p -> p.sendMessage("§cHráč §e"+ to +"§c neodpověděl na tvůj request."));
-        to.onLocal(p -> p.sendMessage("§cNeodpověděl jsi na request hráče §e"+ from));
+        from.onLocal(p -> p.sendMessage(tl("requests.timeout.from", new PlaceHolder("player", to))));
+        to.onLocal(p -> p.sendMessage(tl("requests.timeout.to", new PlaceHolder("player", from))));
 
         from.onRemote(p -> new RequestDenyMessage(request)
-                .setReason("§cHráč §e"+ to +"§c neodpověděl na tvůj request.")
+                .setReason(tl("requests.timeout.from", new PlaceHolder("player", to)))
                 .send(Main.getInstance().getBungeeDriver()));
     }
 
@@ -139,7 +138,7 @@ public class RequestManager {
             BackPersist.getLastLoc().put(p, new BackInfo(p.getLocation()));
 
             p.teleport(to.getPlayer().getLocation());
-            p.sendMessage("§aHráč §e" + to + " §apřijal tvůj request.");
+            p.sendMessage(tl("requests.accept.from", new PlaceHolder("player", to)));
         });
 
         from.onRemote(p -> {
@@ -150,7 +149,7 @@ public class RequestManager {
                     .send(Main.getInstance().getBungeeDriver());
         });
 
-        to.onLocal(p -> p.sendMessage("§aPřijal jsi request hráče §e" + from));
+        to.onLocal(p -> p.sendMessage(tl("requests.accept.to", new PlaceHolder("player", from))));
         request.cancelCountdown();
     }
 
@@ -160,11 +159,11 @@ public class RequestManager {
 
         getAllPlayer(to).remove(request);
 
-        from.onLocal(p -> p.sendMessage("§cHráč §e" + to + " §codmítnul tvůj request."));
-        to.onLocal(p -> p.sendMessage("§cOdmítnul jsi request hráče §e" + from));
+        from.onLocal(p -> p.sendMessage(tl("requests.deny.from", new PlaceHolder("player", to))));
+        to.onLocal(p -> p.sendMessage(tl("requests.deny.to", new PlaceHolder("player", from))));
 
         from.onRemote(p -> new RequestDenyMessage(request)
-                .setReason("§cHráč §e" + to + " §codmítnul tvůj request.")
+                .setReason(tl("requests.deny.from", new PlaceHolder("player", to)))
                 .send(Main.getInstance().getBungeeDriver()));
 
         request.cancelCountdown();

@@ -2,6 +2,7 @@ package cz.novosadkry.UtilTPA.UI;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
+import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,7 +11,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
+
 public class RequestInventory {
+    public static final int MAX_ROWS_PER_PAGE = 6;
+
     private Inventory inventory;
     private final String inventoryName;
     private final Player owner;
@@ -23,7 +28,7 @@ public class RequestInventory {
     }
 
     public RequestInventory(Player owner, int pageSize) {
-        this(owner, pageSize, "Seznam hráčů");
+        this(owner, pageSize, tl("inventory.name"));
     }
 
     public RequestInventory(Player owner, int pageSize, String inventoryName) {
@@ -54,6 +59,10 @@ public class RequestInventory {
         return inventory.getSize() - 9;
     }
 
+    public int getTotalPageCount(int playerCount) {
+        return (int) Math.ceil((float) playerCount / getPagePlayerCount());
+    }
+
     public static int getPageSizeAdaptive() {
         BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
 
@@ -61,9 +70,9 @@ public class RequestInventory {
             Math.ceil(
                 Math.min(
                     (float)(bungeeDriver.getPlayerList().size() - 1) / 9,
-                    5
+                    MAX_ROWS_PER_PAGE
                 )
-            ) + 1) * 9
+            )) * 9
         );
     }
 
@@ -122,7 +131,7 @@ public class RequestInventory {
             ItemStack nextItem = new ItemStack(Material.FEATHER);
 
             ItemMeta nextMeta = nextItem.getItemMeta();
-            nextMeta.setDisplayName("Další");
+            nextMeta.setDisplayName(tl("inventory.pages.next"));
 
             nextItem.setItemMeta(nextMeta);
             inventory.setItem(getPageSize() - 4, nextItem);
@@ -132,7 +141,7 @@ public class RequestInventory {
             ItemStack backItem = new ItemStack(Material.FEATHER);
 
             ItemMeta backMeta = backItem.getItemMeta();
-            backMeta.setDisplayName("Zpět");
+            backMeta.setDisplayName(tl("inventory.pages.previous"));
 
             backItem.setItemMeta(backMeta);
             inventory.setItem(getPageSize() - 6, backItem);
@@ -141,11 +150,11 @@ public class RequestInventory {
         ItemStack pageItem = new ItemStack(Material.BOOK);
 
         ItemMeta pageMeta = pageItem.getItemMeta();
-        pageMeta.setDisplayName(String.format(
-                "Strana %d z %d",
-                page + 1,
-                (int)Math.ceil((float)playerCount / getPagePlayerCount()))
-        );
+        pageMeta.setDisplayName(tl(
+                "inventory.pages.current",
+                new PlaceHolder("current", page + 1),
+                new PlaceHolder("total", getTotalPageCount(playerCount))
+        ));
 
         pageItem.setItemMeta(pageMeta);
         inventory.setItem(getPageSize() - 5, pageItem);

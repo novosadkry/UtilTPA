@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request.Listeners;
 
+import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.Request.RequestPlayer;
@@ -9,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.LinkedList;
+
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
 
 public class RequestPlayerSpawnListener implements Listener {
     @EventHandler
@@ -24,7 +27,7 @@ public class RequestPlayerSpawnListener implements Listener {
 
             request.getTo().onLocal(to -> {
                 e.setSpawnLocation(to.getLocation());
-                from.sendMessage("§aHráč §e" + to + " §apřijal tvůj request.");
+                from.sendMessage(tl("requests.accept.from", new PlaceHolder("player", to)));
 
                 awaited.clear();
             });

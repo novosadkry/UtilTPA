@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
+import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.Request.RequestPlayer;
@@ -8,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static cz.novosadkry.UtilTPA.Localization.Locale.*;
 
 public class TpAcceptExecutor implements CommandExecutor {
 
@@ -25,7 +28,7 @@ public class TpAcceptExecutor implements CommandExecutor {
                     request = requestManager.getFrom(player, new RequestPlayer(args[0]));
 
                     if (request == null) {
-                        player.getPlayer().sendMessage("§cNemáš žádné příchozí requesty od hráče §e" + args[0]);
+                        player.getPlayer().sendMessage(tl("requests.error.hasNoneFrom", new PlaceHolder("player", args[0])));
                         return true;
                     }
 
@@ -43,7 +46,7 @@ public class TpAcceptExecutor implements CommandExecutor {
                 return true;
             }
 
-            player.getPlayer().sendMessage("§cNemáš žádné příchozí requesty!");
+            player.getPlayer().sendMessage(tl("requests.error.hasNone"));
         }
 
         return true;
