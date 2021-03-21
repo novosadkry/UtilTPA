@@ -5,20 +5,15 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageEventHandler;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.util.List;
-
-public abstract class BungeeDriver extends MessageEventHandler implements PluginMessageListener {
-    abstract public String getServerName();
-
-    abstract public List<String> getPlayerList();
+public abstract class BungeeDriver extends MessageEventHandler implements IBungeeDriver {
 
     public void initialize() {
         Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
     }
 
+    @Override
     public void sendMessage(Message msg) {
         Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
     }

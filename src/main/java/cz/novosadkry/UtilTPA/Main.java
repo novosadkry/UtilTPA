@@ -3,6 +3,7 @@ package cz.novosadkry.UtilTPA;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOffline;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOnline;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete.*;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
@@ -21,6 +22,8 @@ import cz.novosadkry.UtilTPA.Heads.HeadProviderEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.Localization.Locale;
+import cz.novosadkry.UtilTPA.Services.IServiceProvider;
+import cz.novosadkry.UtilTPA.Services.ServiceProvider;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
@@ -28,9 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
     private static Main instance;
-
-    private IHeadProvider headProvider;
-    private BungeeDriver bungeeDriver;
+    private static IServiceProvider serviceProvider;
 
     @Override
     public void onLoad() {
@@ -53,14 +54,14 @@ public class Main extends JavaPlugin {
                 .registerResolver(new RequestDenyMessageResolver())
                 .registerResolver(new RequestMessageResolver());
 
-        bungeeDriver = config.getBoolean("bungeecord.enabled")
+        BungeeDriver bungeeDriver = config.getBoolean("bungeecord.enabled")
                 ? new BungeeDriverOnline(
                     config.getLong("bungeecord.playerlist-tick"),
                     messageResolvers
                 )
                 : new BungeeDriverOffline();
 
-        headProvider =
+        IHeadProvider headProvider =
                 config.getBoolean("head-inventory.enabled") &&
                 config.getBoolean("head-inventory.online-mode")
                     ? new HeadCacheService(
@@ -84,10 +85,9 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackPlayerDeathListener(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerQuitListener(), this);
 
-        getBungeeDriver().initialize();
-        getBungeeDriver().registerListener(new RequestMessageListener());
+        bungeeDriver.registerListener(new RequestMessageListener());
 
-        getHeadProvider().initialize();
+        serviceProvider = new ServiceProvider(bungeeDriver, headProvider);
 
         super.onEnable();
     }
@@ -96,21 +96,21 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         HandlerList.unregisterAll(this);
 
-        getBungeeDriver().terminate();
-        getHeadProvider().terminate();
+        serviceProvider.remove(IBungeeDriver.class, true);
+        serviceProvider.remove(IHeadProvider.class, true);
 
         super.onDisable();
     }
 
-    public BungeeDriver getBungeeDriver() {
-        return bungeeDriver;
-    }
-
-    public IHeadProvider getHeadProvider() {
-        return headProvider;
-    }
-
     public static Main getInstance() {
         return instance;
+    }
+
+    public static IServiceProvider getServiceProvider() {
+        return serviceProvider;
+    }
+
+    public static <T> T getService(Class<T> clazz) {
+        return Main.getServiceProvider().get(clazz);
     }
 }

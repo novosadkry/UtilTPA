@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Request.Listeners;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessage;
@@ -30,7 +31,7 @@ public class RequestMessageListener implements MessageListener {
                 RequestAcceptMessage acceptMsg = (RequestAcceptMessage) msg;
                 request.getFrom().onLocal(p ->
                     new ConnectMessage(p, acceptMsg.getServer())
-                        .send(Main.getInstance().getBungeeDriver())
+                        .send(Main.getService(IBungeeDriver.class))
                 );
                 break;
 

@@ -1,5 +1,6 @@
 package cz.novosadkry.UtilTPA.Commands.Back;
 
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.command.Command;
@@ -24,7 +25,7 @@ public class BackExecutor implements CommandExecutor {
 
             else if (backInfo.getServer() != null) {
                 new ConnectMessage(player, backInfo.getServer())
-                        .send(Main.getInstance().getBungeeDriver());
+                        .send(Main.getService(IBungeeDriver.class));
             }
 
             else

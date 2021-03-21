@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
@@ -60,7 +60,7 @@ public class RequestManager {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
 
-        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+        IBungeeDriver bungeeDriver = Main.getService(IBungeeDriver.class);
 
         if (!request.valid()) {
             from.onLocal(p -> p.sendMessage(tl("requests.error.invalid")));
@@ -71,7 +71,7 @@ public class RequestManager {
         {
             from.onRemote(p -> new RequestDenyMessage(request)
                     .setReason(tl("requests.error.alreadySent"))
-                    .send(Main.getInstance().getBungeeDriver()));
+                    .send(Main.getService(IBungeeDriver.class)));
 
             from.onLocal(p -> p.sendMessage(tl("requests.error.alreadySent")));
             return;
@@ -80,7 +80,7 @@ public class RequestManager {
         if (to.isRemote()) {
             if (bungeeDriver.getPlayerList().contains(to.getName())) {
                 new RequestMessage(request)
-                        .send(Main.getInstance().getBungeeDriver());
+                        .send(Main.getService(IBungeeDriver.class));
 
                 from.onLocal(p -> p.sendMessage(tl("requests.send.from", new PlaceHolder("player", to))));
             } else {
@@ -124,7 +124,7 @@ public class RequestManager {
 
         from.onRemote(p -> new RequestDenyMessage(request)
                 .setReason(tl("requests.timeout.from", new PlaceHolder("player", to)))
-                .send(Main.getInstance().getBungeeDriver()));
+                .send(Main.getService(IBungeeDriver.class)));
     }
 
     public void acceptRequest(Request request) {
@@ -132,7 +132,7 @@ public class RequestManager {
         final RequestPlayer to = request.getTo();
 
         getAllPlayer(to).remove(request);
-        BungeeDriver bungeeDriver = Main.getInstance().getBungeeDriver();
+        IBungeeDriver bungeeDriver = Main.getService(IBungeeDriver.class);
 
         from.onLocal(p -> {
             BackPersist.getLastLoc().put(p, new BackInfo(p.getLocation()));
@@ -146,7 +146,7 @@ public class RequestManager {
 
             new RequestAcceptMessage(request)
                     .setServer(bungeeDriver.getServerName())
-                    .send(Main.getInstance().getBungeeDriver());
+                    .send(Main.getService(IBungeeDriver.class));
         });
 
         to.onLocal(p -> p.sendMessage(tl("requests.accept.to", new PlaceHolder("player", from))));
@@ -164,7 +164,7 @@ public class RequestManager {
 
         from.onRemote(p -> new RequestDenyMessage(request)
                 .setReason(tl("requests.deny.from", new PlaceHolder("player", to)))
-                .send(Main.getInstance().getBungeeDriver()));
+                .send(Main.getService(IBungeeDriver.class)));
 
         request.cancelCountdown();
     }
