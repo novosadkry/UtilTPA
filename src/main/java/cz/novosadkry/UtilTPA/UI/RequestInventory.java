@@ -1,7 +1,7 @@
 package cz.novosadkry.UtilTPA.UI;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
+import cz.novosadkry.UtilTPA.Heads.IHeadProvider;
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
@@ -113,7 +113,7 @@ public class RequestInventory {
     }
 
     private void setContent(String[] players, int startIndex, int maxPlayerCount) {
-        HeadCacheService cacheService = Main.getInstance().getHeadCacheService();
+        IHeadProvider cacheService = Main.getInstance().getHeadProvider();
         ItemStack[] contents = new ItemStack[getPagePlayerCount()];
 
         for (int i = 0; i < maxPlayerCount; i++) {

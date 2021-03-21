@@ -1,10 +1,10 @@
-package cz.novosadkry.UtilTPA.Heads.Service;
+package cz.novosadkry.UtilTPA.Heads;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class HeadCacheServiceOffline implements HeadCacheService {
+public class HeadProviderEmpty implements IHeadProvider {
     @Override
     public ItemStack getHead(String player) {
         Material mat = null;
@@ -33,11 +33,6 @@ public class HeadCacheServiceOffline implements HeadCacheService {
 
         skullItem.setItemMeta(skullMeta);
         return skullItem;
-    }
-
-    @Override
-    public void enqueueHead(String player) {
-
     }
 
     @Override

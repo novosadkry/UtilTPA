@@ -8,6 +8,7 @@ import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
+import cz.novosadkry.UtilTPA.Heads.IHeadProvider;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestMessageListener;
 import cz.novosadkry.UtilTPA.Commands.Back.BackExecutor;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerDeathListener;
@@ -15,10 +16,9 @@ import cz.novosadkry.UtilTPA.Commands.Back.BackPlayerQuitListener;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpAcceptExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpDenyExecutor;
 import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
-import cz.novosadkry.UtilTPA.Heads.Cache.HeadCachePlayerJoinListener;
+import cz.novosadkry.UtilTPA.Heads.Listeners.HeadPlayerJoinListener;
+import cz.novosadkry.UtilTPA.Heads.HeadProviderEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
-import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOffline;
-import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheServiceOnline;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.Localization.Locale;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
@@ -29,7 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
     private static Main instance;
 
-    private HeadCacheService headCacheService;
+    private IHeadProvider headProvider;
     private BungeeDriver bungeeDriver;
 
     @Override
@@ -60,14 +60,14 @@ public class Main extends JavaPlugin {
                 )
                 : new BungeeDriverOffline();
 
-        headCacheService =
+        headProvider =
                 config.getBoolean("head-inventory.enabled") &&
                 config.getBoolean("head-inventory.online-mode")
-                    ? new HeadCacheServiceOnline(
+                    ? new HeadCacheService(
                         config.getLong("head-inventory.cache.expire-tick"),
                         config.getLong("head-inventory.cache.refresh-tick"),
                         config.getLong("head-inventory.cache.queue-tick"))
-                    : new HeadCacheServiceOffline();
+                    : new HeadProviderEmpty();
 
         getCommand("tpa").setExecutor(new TpaExecutor());
         getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
@@ -80,14 +80,14 @@ public class Main extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new RequestPlayerSpawnListener(), this);
         getServer().getPluginManager().registerEvents(new RequestInventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new HeadCachePlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new HeadPlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerDeathListener(), this);
         getServer().getPluginManager().registerEvents(new BackPlayerQuitListener(), this);
 
         getBungeeDriver().initialize();
         getBungeeDriver().registerListener(new RequestMessageListener());
 
-        getHeadCacheService().initialize();
+        getHeadProvider().initialize();
 
         super.onEnable();
     }
@@ -97,7 +97,7 @@ public class Main extends JavaPlugin {
         HandlerList.unregisterAll(this);
 
         getBungeeDriver().terminate();
-        getHeadCacheService().terminate();
+        getHeadProvider().terminate();
 
         super.onDisable();
     }
@@ -106,8 +106,8 @@ public class Main extends JavaPlugin {
         return bungeeDriver;
     }
 
-    public HeadCacheService getHeadCacheService() {
-        return headCacheService;
+    public IHeadProvider getHeadProvider() {
+        return headProvider;
     }
 
     public static Main getInstance() {
