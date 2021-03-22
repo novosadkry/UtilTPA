@@ -12,12 +12,23 @@ public class ServiceProvider implements IServiceProvider {
     }
 
     public ServiceProvider(IService... services) {
+        this(false, services);
+    }
+
+    public ServiceProvider(boolean initialize, IService... services) {
         serviceMap = new HashMap<>();
 
         for (IService service : services) {
-            service.initialize();
+            if (initialize)
+                service.initialize();
+
             serviceMap.put(service.getClass(), service);
         }
+    }
+
+    @Override
+    public void add(IService service) {
+        add(service, false);
     }
 
     @Override
@@ -32,15 +43,41 @@ public class ServiceProvider implements IServiceProvider {
     }
 
     @Override
-    public <T> void remove(Class<T> clazz, boolean terminate) {
-        IService service = removeServiceOf(clazz);
-
-        if (service != null && terminate)
-            service.terminate();
+    public <T extends IService> T remove(Class<T> clazz) {
+        return remove(clazz, false);
     }
 
     @Override
-    public <T> T get(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    public <T extends IService> T remove(Class<T> clazz, boolean terminate) {
+        IService service = removeServiceOf(clazz);
+
+        if (service != null && terminate) {
+            service.terminate();
+            return (T) service;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void removeAll() {
+        removeAll(false);
+    }
+
+    @Override
+    public void removeAll(boolean terminate) {
+        for (Class<?> clazz : serviceMap.keySet()) {
+            IService service = serviceMap.remove(clazz);
+
+            if (terminate)
+                service.terminate();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends IService> T get(Class<T> clazz) {
         IService service = getServiceOf(clazz);
         return (T) service;
     }

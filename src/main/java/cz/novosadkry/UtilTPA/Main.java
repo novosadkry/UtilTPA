@@ -3,7 +3,6 @@ package cz.novosadkry.UtilTPA;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOffline;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOnline;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete.*;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
@@ -22,6 +21,7 @@ import cz.novosadkry.UtilTPA.Heads.HeadProviderEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.Localization.Locale;
+import cz.novosadkry.UtilTPA.Services.IService;
 import cz.novosadkry.UtilTPA.Services.IServiceProvider;
 import cz.novosadkry.UtilTPA.Services.ServiceProvider;
 import cz.novosadkry.UtilTPA.UI.RequestInventoryClickListener;
@@ -36,6 +36,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
+        serviceProvider = new ServiceProvider();
+
         super.onLoad();
     }
 
@@ -86,7 +88,8 @@ public class Main extends JavaPlugin {
 
         bungeeDriver.registerListener(new RequestMessageListener());
 
-        serviceProvider = new ServiceProvider(bungeeDriver, headProvider);
+        getServiceProvider().add(bungeeDriver, true);
+        getServiceProvider().add(bungeeDriver, true);
 
         super.onEnable();
     }
@@ -94,9 +97,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
-
-        serviceProvider.remove(IBungeeDriver.class, true);
-        serviceProvider.remove(IHeadProvider.class, true);
+        getServiceProvider().removeAll(true);
 
         super.onDisable();
     }
@@ -109,7 +110,7 @@ public class Main extends JavaPlugin {
         return serviceProvider;
     }
 
-    public static <T> T getService(Class<T> clazz) {
+    public static <T extends IService> T getService(Class<T> clazz) {
         return Main.getServiceProvider().get(clazz);
     }
 }
