@@ -14,7 +14,7 @@ public abstract class Message {
 
     public abstract byte[] toBytes();
 
-    public Message on(MessageListener callback) {
+    public Message on(IMessageListener callback) {
         BungeeDriver bungeeDriver = Main.getService(BungeeDriver.class);
         bungeeDriver.registerListener(callback);
         return this;

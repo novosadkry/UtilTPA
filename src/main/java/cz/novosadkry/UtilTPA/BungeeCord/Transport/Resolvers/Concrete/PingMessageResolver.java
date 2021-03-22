@@ -4,10 +4,10 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.PingMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolver;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.IMessageResolver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.ResolveResult;
 
-public class PingMessageResolver implements MessageResolver {
+public class PingMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {

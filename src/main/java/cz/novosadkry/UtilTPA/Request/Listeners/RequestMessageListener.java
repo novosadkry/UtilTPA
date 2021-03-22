@@ -2,7 +2,7 @@ package cz.novosadkry.UtilTPA.Request.Listeners;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.IMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestAcceptMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyMessage;
@@ -11,7 +11,7 @@ import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 
-public class RequestMessageListener implements MessageListener {
+public class RequestMessageListener implements IMessageListener {
     @Override
     public void onMessage(Message msg) {
         if (msg instanceof RequestMessage)

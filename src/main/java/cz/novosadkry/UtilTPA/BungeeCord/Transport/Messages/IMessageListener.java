@@ -1,5 +1,5 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
-public interface MessageListener {
+public interface IMessageListener {
     void onMessage(Message msg);
 }

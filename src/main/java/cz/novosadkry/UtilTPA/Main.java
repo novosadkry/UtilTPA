@@ -57,8 +57,7 @@ public class Main extends JavaPlugin {
         BungeeDriver bungeeDriver = config.getBoolean("bungeecord.enabled")
                 ? new BungeeDriverOnline(
                     config.getLong("bungeecord.playerlist-tick"),
-                    messageResolvers
-                )
+                    messageResolvers)
                 : new BungeeDriverOffline();
 
         IHeadProvider headProvider =
