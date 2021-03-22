@@ -18,7 +18,10 @@ public class BackExecutor implements CommandExecutor {
 
             BackInfo backInfo = BackPersist.getLastLoc().remove(player);
 
-            if (backInfo.getLoc() != null) {
+            if (backInfo == null)
+                sender.sendMessage(tl("back.failure"));
+
+            else if (backInfo.getLoc() != null) {
                 player.teleport(backInfo.getLoc());
                 sender.sendMessage(tl("back.success"));
             }
