@@ -60,7 +60,7 @@ public class RequestInventory {
     }
 
     public int getTotalPageCount(int playerCount) {
-        return (int) Math.ceil((float) playerCount / getPagePlayerCount());
+        return Math.max((int) Math.ceil((float) playerCount / getPagePlayerCount()), 1);
     }
 
     public static int getPageSizeAdaptive() {
@@ -69,7 +69,7 @@ public class RequestInventory {
         return (int)((
             Math.ceil(
                 Math.min(
-                    (float)(bungeeDriver.getPlayerList().size() - 1) / 9,
+                    ((bungeeDriver.getPlayerList().size() - 1) / 9.0f) + 1,
                     MAX_ROWS_PER_PAGE
                 )
             )) * 9
