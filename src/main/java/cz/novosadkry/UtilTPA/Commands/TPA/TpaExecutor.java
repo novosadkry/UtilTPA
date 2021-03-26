@@ -1,6 +1,7 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Config;
+import cz.novosadkry.UtilTPA.Request.ExpiringRequest;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.UI.RequestInventory;
@@ -20,7 +21,7 @@ public class TpaExecutor implements CommandExecutor {
             RequestManager requestManager = RequestManager.getInstance();
 
             if (args.length == 1) {
-                Request request = new Request(player.getName(), args[0]);
+                Request request = new ExpiringRequest(player.getName(), args[0], 20000);
                 requestManager.sendRequest(request);
             }
 

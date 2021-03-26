@@ -1,10 +1,7 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import java.util.Timer;
-
 public class Request {
     private final RequestPlayer from, to;
-    private Timer timer;
 
     public RequestPlayer getFrom() {
         return from;
@@ -23,16 +20,9 @@ public class Request {
         this(new RequestPlayer(from), new RequestPlayer(to));
     }
 
-    public void startCountdown() {
-        if (timer == null)
-            this.timer = new Timer();
-
-        timer.schedule(new RequestExpiration(this), 20000);
-    }
-
-    public void cancelCountdown() {
-        if (timer != null)
-            timer.cancel();
+    public Request(Request request) {
+        this.from = request.from;
+        this.to = request.to;
     }
 
     public boolean valid() {
@@ -57,4 +47,8 @@ public class Request {
                 ", to='" + to + '\'' +
                 '}';
     }
+
+    public void onSent() { }
+
+    public void onResolved() { }
 }

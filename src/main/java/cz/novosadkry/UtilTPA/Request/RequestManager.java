@@ -18,7 +18,7 @@ import static cz.novosadkry.UtilTPA.Localization.Locale.*;
 public class RequestManager {
     private static RequestManager manager;
     private final Map<RequestPlayer, LinkedList<Request>> requests = new HashMap<>();
-    private final Map<RequestPlayer, LinkedList<Request>> awaitedRequests = new HashMap<>();
+    private final Map<RequestPlayer, LinkedList<ExpiringRequest>> awaitedRequests = new HashMap<>();
 
     public Map<RequestPlayer, LinkedList<Request>> getAll() {
         return requests;
@@ -29,11 +29,11 @@ public class RequestManager {
         return requests.get(player);
     }
 
-    public Map<RequestPlayer, LinkedList<Request>> getAwaited() {
+    public Map<RequestPlayer, LinkedList<ExpiringRequest>> getAwaited() {
         return awaitedRequests;
     }
 
-    public LinkedList<Request> getAwaitedPlayer(RequestPlayer player) {
+    public LinkedList<ExpiringRequest> getAwaitedPlayer(RequestPlayer player) {
         awaitedRequests.computeIfAbsent(player, k -> new LinkedList<>());
         return awaitedRequests.get(player);
     }
@@ -90,7 +90,6 @@ public class RequestManager {
 
         else {
             getAllPlayer(to).add(request);
-            request.startCountdown();
 
             TextComponent tpAccept = new TextComponent("§a/tpaccept");
             TextComponent tpDeny = new TextComponent("§4/tpdeny");
@@ -109,10 +108,12 @@ public class RequestManager {
 
             to.onLocal(p -> p.spigot().sendMessage(msg));
             from.onLocal(p -> p.sendMessage(tl("requests.send.from", new PlaceHolder("player", to))));
+
+            request.onSent();
         }
     }
 
-    public void timeoutRequest(Request request) {
+    public void timeoutRequest(ExpiringRequest request) {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
 
@@ -142,7 +143,10 @@ public class RequestManager {
         });
 
         from.onRemote(p -> {
-            getAwaitedPlayer(from).add(request);
+            getAwaitedPlayer(from).add(
+                    new ExpiringRequest(request, 20000)
+                            .startCountdown()
+            );
 
             new RequestAcceptMessage(request)
                     .setServer(bungeeDriver.getServerName())
@@ -150,7 +154,7 @@ public class RequestManager {
         });
 
         to.onLocal(p -> p.sendMessage(tl("requests.accept.to", new PlaceHolder("player", from))));
-        request.cancelCountdown();
+        request.onResolved();
     }
 
     public void denyRequest(Request request) {
@@ -166,7 +170,7 @@ public class RequestManager {
                 .setReason(tl("requests.deny.from", new PlaceHolder("player", to)))
                 .send(Main.getService(IBungeeDriver.class)));
 
-        request.cancelCountdown();
+        request.onResolved();
     }
 
     public static RequestManager getInstance() {

@@ -1,7 +1,7 @@
 package cz.novosadkry.UtilTPA.Request.Listeners;
 
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
-import cz.novosadkry.UtilTPA.Request.Request;
+import cz.novosadkry.UtilTPA.Request.ExpiringRequest;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 import cz.novosadkry.UtilTPA.Request.RequestPlayer;
 import org.bukkit.entity.Player;
@@ -19,8 +19,8 @@ public class RequestPlayerSpawnListener implements Listener {
         RequestPlayer requestPlayer = new RequestPlayer(e.getPlayer());
         RequestManager requestManager = RequestManager.getInstance();
 
-        LinkedList<Request> awaited = requestManager.getAwaitedPlayer(requestPlayer);
-        Request request = awaited.peekLast();
+        LinkedList<ExpiringRequest> awaited = requestManager.getAwaitedPlayer(requestPlayer);
+        ExpiringRequest request = awaited.peekLast();
 
         if (request != null) {
             Player from = e.getPlayer();
@@ -31,6 +31,8 @@ public class RequestPlayerSpawnListener implements Listener {
 
                 awaited.clear();
             });
+
+            request.onResolved();
         }
     }
 }
