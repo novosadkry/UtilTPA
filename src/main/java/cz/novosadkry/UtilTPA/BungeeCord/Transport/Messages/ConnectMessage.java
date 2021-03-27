@@ -1,8 +1,7 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 import org.bukkit.entity.Player;
 
 public class ConnectMessage extends Message {

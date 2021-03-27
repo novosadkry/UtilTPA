@@ -1,13 +1,14 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.PingMessage;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.IMessageResolver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.ResolveResult;
+import cz.novosadkry.UtilTPA.Request.Request;
 
-public class PingMessageResolver implements IMessageResolver {
+public class RequestMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {
@@ -20,17 +21,16 @@ public class PingMessageResolver implements IMessageResolver {
                 final short length = input.readShort();
                 String type = input.readUTF();
 
-                if (!type.equals("PING"))
+                if (!type.equals("REQUEST"))
                     return new ResolveResult(false);
 
                 String from = input.readUTF();
                 String to = input.readUTF();
-                String message = input.readUTF();
 
                 if (input.skipBytes(1) > 0)
                     return new ResolveResult(false);
 
-                Message msg = new PingMessage(from, to, message);
+                Message msg = new RequestMessage(new Request(from, to));
                 return new ResolveResult(msg);
             }
 

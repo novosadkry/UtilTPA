@@ -1,22 +1,22 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.Request.Request;
 
-public class RequestDenyMessage extends RequestMessage {
-    protected String reason;
+public class RequestAcceptMessage extends RequestMessage {
+    protected String server;
 
-    public RequestDenyMessage(Request request) {
+    public RequestAcceptMessage(Request request) {
         super(request);
     }
 
-    public String getReason() {
-        return reason;
+    public String getServer() {
+        return server;
     }
 
-    public RequestDenyMessage setReason(String reason) {
-        this.reason = reason;
+    public RequestAcceptMessage setServer(String server) {
+        this.server = server;
         return this;
     }
 
@@ -32,10 +32,10 @@ public class RequestDenyMessage extends RequestMessage {
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeUTF("REQUEST_DENY");
+        body.writeUTF("REQUEST_ACCEPT");
         body.writeUTF(request.getFrom().getName());
         body.writeUTF(request.getTo().getName());
-        body.writeUTF(reason);
+        body.writeUTF(server);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -47,6 +47,6 @@ public class RequestDenyMessage extends RequestMessage {
 
     @Override
     public String getName() {
-        return "REQUEST_DENY";
+        return "REQUEST_ACCEPT";
     }
 }

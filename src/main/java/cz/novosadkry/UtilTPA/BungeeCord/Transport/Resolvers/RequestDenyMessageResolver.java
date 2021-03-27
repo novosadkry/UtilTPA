@@ -1,14 +1,14 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.IMessageResolver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.ResolveResult;
 import cz.novosadkry.UtilTPA.Request.Request;
 
-public class RequestMessageResolver implements IMessageResolver {
+public class RequestDenyMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {
@@ -21,16 +21,19 @@ public class RequestMessageResolver implements IMessageResolver {
                 final short length = input.readShort();
                 String type = input.readUTF();
 
-                if (!type.equals("REQUEST"))
+                if (!type.equals("REQUEST_DENY"))
                     return new ResolveResult(false);
 
                 String from = input.readUTF();
                 String to = input.readUTF();
+                String reason = input.readUTF();
 
                 if (input.skipBytes(1) > 0)
                     return new ResolveResult(false);
 
-                Message msg = new RequestMessage(new Request(from, to));
+                Message msg = new RequestDenyMessage(new Request(from, to))
+                        .setReason(reason);
+
                 return new ResolveResult(msg);
             }
 

@@ -1,39 +1,40 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
+package cz.novosadkry.UtilBungee.Transport.Resolvers;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.Log;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageResolverPool {
+public class MessageResolverPool implements IMessageResolverPool {
     private final Map<Class<?>, IMessageResolver> resolvers;
 
     public MessageResolverPool() {
         resolvers = new HashMap<>();
     }
 
+    @Override
     public MessageResolverPool registerResolver(IMessageResolver resolver) {
-        if (resolvers.put(resolver.getClass(), resolver) == null)
-            Log.fine(getClass().getSimpleName() + " : Register resolver of type " + resolver.getClass().getName());
-
+        resolvers.put(resolver.getClass(), resolver);
         return this;
     }
 
+    @Override
     public MessageResolverPool unregisterResolver(IMessageResolver resolver) {
         resolvers.remove(resolver.getClass());
         return this;
     }
 
+    @Override
     public MessageResolverPool unregisterResolvers() {
         resolvers.clear();
         return this;
     }
 
     /** @return <code>null</code> if not resolved **/
-    public Message resolve(byte[] data) {
+    @Override
+    public IMessage resolve(byte[] data) {
         for (IMessageResolver resolver : resolvers.values()) {
-            ResolveResult result = resolver.resolve(data);
+            IResolveResult result = resolver.resolve(data);
 
             if (result.isSuccess())
                 return result.getMessage();

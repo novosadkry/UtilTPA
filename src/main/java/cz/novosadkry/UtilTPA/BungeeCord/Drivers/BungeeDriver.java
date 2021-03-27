@@ -1,23 +1,18 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.MessageEventHandler;
-import cz.novosadkry.UtilTPA.Main;
-import org.bukkit.Bukkit;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolverPool;
+import cz.novosadkry.UtilTPA.Services.IService;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public abstract class BungeeDriver extends MessageEventHandler implements IBungeeDriver {
+import java.util.List;
 
-    public void initialize() {
-        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
-        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
+public abstract class BungeeDriver extends cz.novosadkry.UtilBungee.Drivers.BungeeDriver implements PluginMessageListener, IService {
+
+    protected BungeeDriver(IMessageResolverPool resolverPool) {
+        super(resolverPool);
     }
 
-    @Override
-    public void sendMessage(Message msg) {
-        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
-    }
+    public abstract String getServerName();
 
-    public void terminate() {
-        unregisterListeners();
-    }
+    public abstract List<String> getPlayerList();
 }

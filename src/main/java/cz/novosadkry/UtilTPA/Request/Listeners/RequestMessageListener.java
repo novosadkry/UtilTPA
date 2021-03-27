@@ -1,19 +1,19 @@
 package cz.novosadkry.UtilTPA.Request.Listeners;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.IMessageListener;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.ConnectMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestDenyMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.RequestMessage;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;
 
 public class RequestMessageListener implements IMessageListener {
     @Override
-    public void onMessage(Message msg) {
+    public void onMessage(IMessage msg) {
         if (msg instanceof RequestMessage)
             onMessage((RequestMessage) msg);
     }
@@ -31,7 +31,7 @@ public class RequestMessageListener implements IMessageListener {
                 RequestAcceptMessage acceptMsg = (RequestAcceptMessage) msg;
                 request.getFrom().onLocal(p ->
                     new ConnectMessage(p, acceptMsg.getServer())
-                        .send(Main.getService(IBungeeDriver.class))
+                        .send(Main.getService(BungeeDriver.class))
                 );
                 break;
 

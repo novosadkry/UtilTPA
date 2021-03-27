@@ -1,13 +1,13 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.GetServerMessage;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.IMessageResolver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.ResolveResult;
 
-public class GetServerMessageResolver implements IMessageResolver {
+public class PlayerListMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {
@@ -16,13 +16,14 @@ public class GetServerMessageResolver implements IMessageResolver {
         try {
             final String subChannel = input.readUTF();
 
-            if (subChannel.equalsIgnoreCase("GetServer")) {
+            if (subChannel.equalsIgnoreCase("PlayerList")) {
                 String server = input.readUTF();
+                String[] playerList = input.readUTF().split(", ");
 
                 if (input.skipBytes(1) > 0)
                     return new ResolveResult(false);
 
-                Message msg = new GetServerMessage().setServer(server);
+                Message msg = new PlayerListMessage(server).setPlayerList(playerList);
                 return new ResolveResult(msg);
             }
 

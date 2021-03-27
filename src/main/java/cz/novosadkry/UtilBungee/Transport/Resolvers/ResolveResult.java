@@ -1,10 +1,10 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
+package cz.novosadkry.UtilBungee.Transport.Resolvers;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 
-public class ResolveResult {
+public class ResolveResult implements IResolveResult {
     private final boolean success;
-    private final Message message;
+    private final IMessage message;
     private final Exception exception;
 
     public ResolveResult(boolean success) {
@@ -15,23 +15,26 @@ public class ResolveResult {
         this(false, null, exception);
     }
 
-    public ResolveResult(Message message) {
+    public ResolveResult(IMessage message) {
         this(true, message, null);
     }
 
-    public ResolveResult(boolean success, Message message, Exception exception) {
+    public ResolveResult(boolean success, IMessage message, Exception exception) {
         this.success = success;
         this.message = message;
         this.exception = exception;
     }
 
+    @Override
     public boolean isSuccess() {
         return success;
     }
 
-    public Message getMessage() {
+    @Override
+    public IMessage getMessage() {
         return message;
     }
 
+    @Override
     public Exception getException() { return exception; }
 }

@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.UI;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Heads.IHeadProvider;
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Main;
@@ -64,7 +64,7 @@ public class RequestInventory {
     }
 
     public static int getPageSizeAdaptive() {
-        IBungeeDriver bungeeDriver = Main.getService(IBungeeDriver.class);
+        BungeeDriver bungeeDriver = Main.getService(BungeeDriver.class);
 
         return (int)((
             Math.ceil(
@@ -94,7 +94,7 @@ public class RequestInventory {
     }
 
     public void setCurrentPage(int page) {
-        IBungeeDriver bungeeDriver = Main.getService(IBungeeDriver.class);
+        BungeeDriver bungeeDriver = Main.getService(BungeeDriver.class);
 
         String[] players = bungeeDriver.getPlayerList().stream()
                 .filter(p -> !p.equals(owner.getName()))

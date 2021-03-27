@@ -1,10 +1,10 @@
 package cz.novosadkry.UtilTPA;
 
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOffline;
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete.BungeeDriverOnline;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.Concrete.*;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.MessageResolverPool;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOffline;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOnline;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.*;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
@@ -89,7 +89,7 @@ public class Main extends JavaPlugin {
         bungeeDriver.registerListener(new RequestMessageListener());
 
         getServiceProvider().add(bungeeDriver, true);
-        getServiceProvider().add(bungeeDriver, true);
+        getServiceProvider().add(headProvider, true);
 
         super.onEnable();
     }

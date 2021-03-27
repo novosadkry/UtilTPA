@@ -1,6 +1,6 @@
 package cz.novosadkry.UtilTPA.Heads.Service;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.IBungeeDriver;
+import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Heads.Cache.HeadCache;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
@@ -61,7 +61,7 @@ public class HeadCacheService implements IHeadCacheService {
 
     public void startCacheRefresh() {
         cacheRefreshTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(Main.class), () -> {
-            IBungeeDriver bungeeDriver = Main.getService(IBungeeDriver.class);
+            BungeeDriver bungeeDriver = Main.getService(BungeeDriver.class);
 
             List<String> playerList = bungeeDriver.getPlayerList();
             List<String> removed = cache.removeExpired();

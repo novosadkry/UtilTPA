@@ -1,10 +1,10 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Drivers.Concrete;
+package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
-import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.GetServerMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Concrete.PlayerListMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers.MessageResolverPool;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolverPool;
+import cz.novosadkry.UtilBungee.Transport.Resolvers.MessageResolverPool;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.GetServerMessage;
+import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,8 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class BungeeDriverOnline extends BungeeDriver {
-    private final MessageResolverPool resolverPool;
-
     private String serverName;
     private String[] playerList;
 
@@ -25,30 +23,35 @@ public class BungeeDriverOnline extends BungeeDriver {
         this(playerListTick, new MessageResolverPool());
     }
 
-    public BungeeDriverOnline(long playerListTick, MessageResolverPool resolverPool) {
-        this.resolverPool = resolverPool;
+    public BungeeDriverOnline(long playerListTick, IMessageResolverPool resolverPool) {
+        super(resolverPool);
+
         playerList = new String[0];
 
         this.playerListTick = playerListTick;
         this.serverNameTick = 20L;
     }
 
-    @Override
     public String getServerName() {
         return serverName;
     }
 
-    @Override
     public List<String> getPlayerList() {
         return Arrays.asList(playerList);
     }
 
     @Override
     public void initialize() {
-        super.initialize();
+        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
 
         askForServerName();
         refreshPlayerList();
+    }
+
+    @Override
+    public void sendMessage(IMessage msg) {
+        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
     }
 
     private void askForServerName() {
@@ -88,15 +91,12 @@ public class BungeeDriverOnline extends BungeeDriver {
         if (!channel.equalsIgnoreCase("BungeeCord"))
             return;
 
-        Message msg = resolverPool.resolve(bytes);
-
-        if (msg != null)
-            notifyListeners(msg);
+        handleData(bytes);
     }
 
     @Override
     public void terminate() {
-        super.terminate();
+        unregisterListeners();
         cancelTasks = true;
     }
 }
