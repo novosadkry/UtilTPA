@@ -3,22 +3,20 @@ package cz.novosadkry.UtilTPABungee.Transport.Messages;
 import cz.novosadkry.UtilBungee.Transport.Handlers.IMessageHandler;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
-import cz.novosadkry.UtilTPABungee.Main;
-import cz.novosadkry.UtilTPABungee.Transport.Drivers.PluginMessageHandler;
 
 public abstract class Message implements IMessage {
-    public void send(IMessageHandler handler) {
-        if (handler == null)
-            return;
-
-        handler.sendMessage(this);
-    }
+    private IMessageListener callback;
 
     public abstract byte[] toBytes();
 
     public Message on(IMessageListener callback) {
-        PluginMessageHandler handler = Main.getMessageHandler();
-        handler.registerListener(callback);
+        this.callback = callback;
         return this;
+    }
+
+    @Override
+    public void send(IMessageHandler handler) {
+        if (callback != null)
+            handler.registerListener(callback);
     }
 }
