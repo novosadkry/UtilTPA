@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilBungee.Transport.Messages;
 
-import cz.novosadkry.UtilBungee.Drivers.IBungeeDriver;
+import cz.novosadkry.UtilBungee.Transport.Handlers.IMessageHandler;
 
 public interface IMessage {
-    void send(IBungeeDriver driver);
+    void send(IMessageHandler handler);
 
     byte[] toBytes();
 

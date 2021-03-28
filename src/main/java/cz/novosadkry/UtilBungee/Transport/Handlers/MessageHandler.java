@@ -1,13 +1,12 @@
-package cz.novosadkry.UtilBungee.Drivers;
+package cz.novosadkry.UtilBungee.Transport.Handlers;
 
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
-import cz.novosadkry.UtilBungee.Transport.Messages.MessageEventHandler;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolverPool;
 
-public abstract class BungeeDriver extends MessageEventHandler implements IBungeeDriver {
+public abstract class MessageHandler extends MessageEventHandler implements IMessageHandler {
     protected IMessageResolverPool resolverPool;
 
-    protected BungeeDriver(IMessageResolverPool resolverPool) {
+    protected MessageHandler(IMessageResolverPool resolverPool) {
         this.resolverPool = resolverPool;
     }
 

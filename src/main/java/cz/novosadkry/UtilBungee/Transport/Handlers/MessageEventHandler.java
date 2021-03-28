@@ -1,4 +1,7 @@
-package cz.novosadkry.UtilBungee.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Handlers;
+
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 
 import java.util.Iterator;
 import java.util.Map;

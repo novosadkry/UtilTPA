@@ -1,4 +1,6 @@
-package cz.novosadkry.UtilBungee.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Handlers;
+
+import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 
 public interface IMessageEventHandler {
     IMessageEventHandler registerListener(IMessageListener listener);
