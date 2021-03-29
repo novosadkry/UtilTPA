@@ -19,12 +19,12 @@ public class BungeeDriverOnline extends BungeeDriver {
     private final long serverNameTick;
     private boolean cancelTasks;
 
-    public BungeeDriverOnline(long playerListTick) {
-        this(playerListTick, new MessageResolverPool());
+    public BungeeDriverOnline(String channel, long playerListTick) {
+        this(channel, playerListTick, new MessageResolverPool());
     }
 
-    public BungeeDriverOnline(long playerListTick, IMessageResolverPool resolverPool) {
-        super(resolverPool);
+    public BungeeDriverOnline(String channel, long playerListTick, IMessageResolverPool resolverPool) {
+        super(channel, resolverPool);
 
         playerList = new String[0];
 
@@ -42,8 +42,8 @@ public class BungeeDriverOnline extends BungeeDriver {
 
     @Override
     public void initialize() {
-        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), "BungeeCord", this);
-        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), "BungeeCord");
+        Bukkit.getMessenger().registerIncomingPluginChannel(Main.getInstance(), getChannel(), this);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Main.getInstance(), getChannel());
 
         askForServerName();
         refreshPlayerList();
@@ -51,7 +51,7 @@ public class BungeeDriverOnline extends BungeeDriver {
 
     @Override
     public void sendMessage(IMessage msg) {
-        Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", msg.toBytes());
+        Bukkit.getServer().sendPluginMessage(Main.getInstance(), getChannel(), msg.toBytes());
     }
 
     private void askForServerName() {
@@ -88,7 +88,7 @@ public class BungeeDriverOnline extends BungeeDriver {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
-        if (!channel.equalsIgnoreCase("BungeeCord"))
+        if (!channel.equalsIgnoreCase(getChannel()))
             return;
 
         handleData(bytes);

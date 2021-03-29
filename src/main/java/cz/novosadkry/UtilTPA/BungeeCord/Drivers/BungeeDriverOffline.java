@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class BungeeDriverOffline extends BungeeDriver {
     public BungeeDriverOffline() {
-        super(null);
+        super(null, null);
     }
 
     public String getServerName() {
