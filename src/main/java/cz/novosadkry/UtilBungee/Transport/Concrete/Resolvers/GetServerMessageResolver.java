@@ -1,13 +1,13 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.GetServerMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.Message;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 
-public class PlayerListMessageResolver implements IMessageResolver {
+public class GetServerMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {
@@ -16,14 +16,13 @@ public class PlayerListMessageResolver implements IMessageResolver {
         try {
             final String subChannel = input.readUTF();
 
-            if (subChannel.equalsIgnoreCase("PlayerList")) {
+            if (subChannel.equalsIgnoreCase("GetServer")) {
                 String server = input.readUTF();
-                String[] playerList = input.readUTF().split(", ");
 
                 if (input.skipBytes(1) > 0)
                     return new ResolveResult(false);
 
-                Message msg = new PlayerListMessage(server).setPlayerList(playerList);
+                Message msg = new GetServerMessage().setServer(server);
                 return new ResolveResult(msg);
             }
 

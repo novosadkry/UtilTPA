@@ -1,30 +1,18 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import cz.novosadkry.UtilTPA.Request.Request;
 
-// Example
-public class PingMessage extends Message {
-    protected String to;
-    protected String from;
-    protected String message;
+public class RequestMessage extends Message {
+    protected Request request;
 
-    public PingMessage(String from, String to, String message) {
-        this.from = from;
-        this.to = to;
-        this.message = message;
+    public RequestMessage(Request request) {
+        this.request = request;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public String getTo() {
-        return to;
-    }
-
-    public String getMessage() {
-        return message;
+    public Request getRequest() {
+        return request;
     }
 
     @Override
@@ -33,16 +21,15 @@ public class PingMessage extends Message {
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(to);
+        header.writeUTF(request.getTo().getName());
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeUTF("PING");
-        body.writeUTF(from);
-        body.writeUTF(to);
-        body.writeUTF(message);
+        body.writeUTF("REQUEST");
+        body.writeUTF(request.getFrom().getName());
+        body.writeUTF(request.getTo().getName());
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -54,6 +41,6 @@ public class PingMessage extends Message {
 
     @Override
     public String getName() {
-        return "PING";
+        return "REQUEST";
     }
 }

@@ -1,23 +1,30 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.Request.Request;
 
-public class RequestAcceptMessage extends RequestMessage {
-    protected String server;
+// Example
+public class PingMessage extends Message {
+    protected String to;
+    protected String from;
+    protected String message;
 
-    public RequestAcceptMessage(Request request) {
-        super(request);
+    public PingMessage(String from, String to, String message) {
+        this.from = from;
+        this.to = to;
+        this.message = message;
     }
 
-    public String getServer() {
-        return server;
+    public String getFrom() {
+        return from;
     }
 
-    public RequestAcceptMessage setServer(String server) {
-        this.server = server;
-        return this;
+    public String getTo() {
+        return to;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     @Override
@@ -26,16 +33,16 @@ public class RequestAcceptMessage extends RequestMessage {
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(request.getFrom().getName());
+        header.writeUTF(to);
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeUTF("REQUEST_ACCEPT");
-        body.writeUTF(request.getFrom().getName());
-        body.writeUTF(request.getTo().getName());
-        body.writeUTF(server);
+        body.writeUTF("PING");
+        body.writeUTF(from);
+        body.writeUTF(to);
+        body.writeUTF(message);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -47,6 +54,6 @@ public class RequestAcceptMessage extends RequestMessage {
 
     @Override
     public String getName() {
-        return "REQUEST_ACCEPT";
+        return "PING";
     }
 }

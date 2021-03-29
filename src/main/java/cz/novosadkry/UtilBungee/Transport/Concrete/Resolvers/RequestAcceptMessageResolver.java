@@ -1,11 +1,11 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.Message;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
 import cz.novosadkry.UtilTPA.Request.Request;
 
 public class RequestAcceptMessageResolver implements IMessageResolver {

@@ -1,12 +1,12 @@
-package cz.novosadkry.UtilTPA.Request.Listeners;
+package cz.novosadkry.UtilTPA.BungeeCord.Listeners;
 
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.ConnectMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestAcceptMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestDenyMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Request.Request;
 import cz.novosadkry.UtilTPA.Request.RequestManager;

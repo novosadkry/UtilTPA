@@ -1,14 +1,13 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Resolvers;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Resolvers;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.Message;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.PlayerListMessage;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.Message;
-import cz.novosadkry.UtilTPA.Request.Request;
 
-public class RequestMessageResolver implements IMessageResolver {
+public class PlayerListMessageResolver implements IMessageResolver {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public ResolveResult resolve(byte[] data) {
@@ -17,20 +16,14 @@ public class RequestMessageResolver implements IMessageResolver {
         try {
             final String subChannel = input.readUTF();
 
-            if (subChannel.equalsIgnoreCase("UtilTPA")) {
-                final short length = input.readShort();
-                String type = input.readUTF();
-
-                if (!type.equals("REQUEST"))
-                    return new ResolveResult(false);
-
-                String from = input.readUTF();
-                String to = input.readUTF();
+            if (subChannel.equalsIgnoreCase("PlayerList")) {
+                String server = input.readUTF();
+                String[] playerList = input.readUTF().split(", ");
 
                 if (input.skipBytes(1) > 0)
                     return new ResolveResult(false);
 
-                Message msg = new RequestMessage(new Request(from, to));
+                Message msg = new PlayerListMessage(server).setPlayerList(playerList);
                 return new ResolveResult(msg);
             }
 

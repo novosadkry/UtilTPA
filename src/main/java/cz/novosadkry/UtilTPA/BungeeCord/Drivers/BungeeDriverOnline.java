@@ -1,10 +1,10 @@
 package cz.novosadkry.UtilTPA.BungeeCord.Drivers;
 
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.GetServerMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.PlayerListMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolverPool;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.MessageResolverPool;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.GetServerMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.PlayerListMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

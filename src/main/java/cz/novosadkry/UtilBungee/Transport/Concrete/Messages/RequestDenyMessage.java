@@ -1,18 +1,23 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import cz.novosadkry.UtilTPA.Request.Request;
 
-public class RequestMessage extends Message {
-    protected Request request;
+public class RequestDenyMessage extends RequestMessage {
+    protected String reason;
 
-    public RequestMessage(Request request) {
-        this.request = request;
+    public RequestDenyMessage(Request request) {
+        super(request);
     }
 
-    public Request getRequest() {
-        return request;
+    public String getReason() {
+        return reason;
+    }
+
+    public RequestDenyMessage setReason(String reason) {
+        this.reason = reason;
+        return this;
     }
 
     @Override
@@ -21,15 +26,16 @@ public class RequestMessage extends Message {
 
         // Write ForwardToPlayer header
         header.writeUTF("ForwardToPlayer");
-        header.writeUTF(request.getTo().getName());
+        header.writeUTF(request.getFrom().getName());
         header.writeUTF("UtilTPA");
 
         ByteArrayDataOutput body = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeUTF("REQUEST");
+        body.writeUTF("REQUEST_DENY");
         body.writeUTF(request.getFrom().getName());
         body.writeUTF(request.getTo().getName());
+        body.writeUTF(reason);
 
         // Append message to header
         byte[] bodyBytes = body.toByteArray();
@@ -41,6 +47,6 @@ public class RequestMessage extends Message {
 
     @Override
     public String getName() {
-        return "REQUEST";
+        return "REQUEST_DENY";
     }
 }

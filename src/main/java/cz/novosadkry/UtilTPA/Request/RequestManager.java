@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilTPA.Request;
 
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestAcceptMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestDenyMessage;
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestAcceptMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestDenyMessage;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.RequestMessage;
 import cz.novosadkry.UtilTPA.Commands.Back.BackInfo;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;

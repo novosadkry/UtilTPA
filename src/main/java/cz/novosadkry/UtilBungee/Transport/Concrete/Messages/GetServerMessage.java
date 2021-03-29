@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages;
+package cz.novosadkry.UtilBungee.Transport.Concrete.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;

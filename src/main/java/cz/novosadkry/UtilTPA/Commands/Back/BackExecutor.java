@@ -1,7 +1,7 @@
 package cz.novosadkry.UtilTPA.Commands.Back;
 
+import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.ConnectMessage;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
-import cz.novosadkry.UtilTPA.BungeeCord.Transport.Messages.ConnectMessage;
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

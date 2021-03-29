@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilTPABungee;
 
+import cz.novosadkry.UtilBungee.Transport.Concrete.Resolvers.PingMessageResolver;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPABungee.Transport.Drivers.PluginMessageHandler;
 import cz.novosadkry.UtilTPABungee.Transport.Listeners.PingMessageListener;
-import cz.novosadkry.UtilTPABungee.Transport.Resolvers.PingMessageResolver;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin {
