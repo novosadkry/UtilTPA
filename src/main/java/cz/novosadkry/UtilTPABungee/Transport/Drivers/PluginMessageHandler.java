@@ -3,7 +3,10 @@ package cz.novosadkry.UtilTPABungee.Transport.Drivers;
 import cz.novosadkry.UtilBungee.Transport.Handlers.MessageHandler;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolverPool;
+import cz.novosadkry.UtilTPABungee.Transport.Messages.BroadcastMessage;
+import cz.novosadkry.UtilTPABungee.Transport.Messages.TargetMessage;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -28,7 +31,29 @@ public class PluginMessageHandler extends MessageHandler implements Listener {
 
     @Override
     public void sendMessage(IMessage msg) {
-        msg.send(this);
+        if (msg instanceof BroadcastMessage)
+            broadcastMessage((BroadcastMessage) msg);
+
+        else if (msg instanceof TargetMessage)
+            sendMessage((TargetMessage) msg);
+
+        else throw new UnsupportedOperationException();
+    }
+
+    public void sendMessage(ProxiedPlayer target, IMessage msg) {
+        sendMessage(new TargetMessage(target, msg));
+    }
+
+    public void sendMessage(TargetMessage msg) {
+        msg.getTarget().getServer().getInfo().sendData(getChannel(), msg.toBytes());
+    }
+
+    public void broadcastMessage(IMessage msg) {
+        broadcastMessage(new BroadcastMessage(msg));
+    }
+
+    public void broadcastMessage(BroadcastMessage msg) {
+        getProxy().getServers().forEach((k, v) -> v.sendData(getChannel(), msg.toBytes()));
     }
 
     public ProxyServer getProxy() {
