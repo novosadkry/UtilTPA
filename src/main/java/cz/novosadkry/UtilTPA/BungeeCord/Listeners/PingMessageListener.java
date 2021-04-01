@@ -4,6 +4,7 @@ import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.PingMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class PingMessageListener implements IMessageListener {
     @Override
@@ -14,6 +15,9 @@ public class PingMessageListener implements IMessageListener {
     }
 
     public void onMessage(PingMessage msg) {
-        Bukkit.getPlayerExact(msg.getTo()).sendMessage(msg.getMessage());
+        Player player = Bukkit.getPlayerExact(msg.getTo());
+
+        if (player != null)
+            player.sendMessage(msg.getMessage());
     }
 }

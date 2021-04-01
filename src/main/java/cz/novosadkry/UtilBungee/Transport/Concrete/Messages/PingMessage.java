@@ -29,27 +29,15 @@ public class PingMessage extends Message {
 
     @Override
     public byte[] toBytes() {
-        ByteArrayDataOutput header = ByteStreams.newDataOutput();
-
-        // Write ForwardToPlayer header
-        header.writeUTF("ForwardToPlayer");
-        header.writeUTF(to);
-        header.writeUTF("UtilTPA");
-
-        ByteArrayDataOutput body = ByteStreams.newDataOutput();
+        ByteArrayDataOutput data = ByteStreams.newDataOutput();
 
         // Write message data
-        body.writeUTF("PING");
-        body.writeUTF(from);
-        body.writeUTF(to);
-        body.writeUTF(message);
+        data.writeUTF("PING");
+        data.writeUTF(from);
+        data.writeUTF(to);
+        data.writeUTF(message);
 
-        // Append message to header
-        byte[] bodyBytes = body.toByteArray();
-        header.writeShort(bodyBytes.length);
-        header.write(bodyBytes);
-
-        return header.toByteArray();
+        return data.toByteArray();
     }
 
     @Override

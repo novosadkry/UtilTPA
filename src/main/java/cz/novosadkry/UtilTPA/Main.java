@@ -5,6 +5,7 @@ import cz.novosadkry.UtilBungee.Transport.Resolvers.MessageResolverPool;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOffline;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriverOnline;
 import cz.novosadkry.UtilBungee.Transport.Concrete.Resolvers.*;
+import cz.novosadkry.UtilTPA.BungeeCord.Listeners.PingMessageListener;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpAcceptTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpDenyTabCompleter;
 import cz.novosadkry.UtilTPA.Commands.TPA.TabCompleters.TpaTabCompleter;
@@ -58,7 +59,7 @@ public class Main extends JavaPlugin {
 
         BungeeDriver bungeeDriver = config.getBoolean("bungeecord.enabled")
                 ? new BungeeDriverOnline(
-                    "BungeeCord",
+                    "utiltpa:channel",
                     config.getLong("bungeecord.playerlist-tick"),
                     messageResolvers)
                 : new BungeeDriverOffline();
@@ -88,6 +89,7 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackPlayerQuitListener(), this);
 
         bungeeDriver.registerListener(new RequestMessageListener());
+        bungeeDriver.registerListener(new PingMessageListener());
 
         getServiceProvider().add(bungeeDriver, true);
         getServiceProvider().add(headProvider, true);

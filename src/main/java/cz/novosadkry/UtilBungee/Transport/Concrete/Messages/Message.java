@@ -11,7 +11,9 @@ public abstract class Message implements IMessage {
         if (handler == null)
             return;
 
-        handler.registerListener(callback);
+        if (callback != null)
+            handler.registerListener(callback);
+
         handler.sendMessage(this);
     }
 

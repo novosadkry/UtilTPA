@@ -7,10 +7,15 @@ import cz.novosadkry.UtilTPABungee.Transport.Listeners.PingMessageListener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin {
-    private static final String channel = "UtilTPA";
+    private static final String channel = "utiltpa:channel";
 
     private static Main instance;
     private static PluginMessageHandler messageHandler;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+    }
 
     @Override
     public void onEnable() {

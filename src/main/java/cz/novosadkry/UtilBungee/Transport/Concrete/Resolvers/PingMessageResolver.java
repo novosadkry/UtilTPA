@@ -16,13 +16,7 @@ public class PingMessageResolver implements IMessageResolver {
         try {
             final String subChannel = input.readUTF();
 
-            if (subChannel.equalsIgnoreCase("UtilTPA")) {
-                final short length = input.readShort();
-                String type = input.readUTF();
-
-                if (!type.equals("PING"))
-                    return new ResolveResult(false);
-
+            if (subChannel.equalsIgnoreCase("PING")) {
                 String from = input.readUTF();
                 String to = input.readUTF();
                 String message = input.readUTF();
