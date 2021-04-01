@@ -1,6 +1,5 @@
 package cz.novosadkry.UtilTPABungee;
 
-import cz.novosadkry.UtilTPA.Main;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 public final class Log {
