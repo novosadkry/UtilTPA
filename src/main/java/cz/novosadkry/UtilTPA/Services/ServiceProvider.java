@@ -67,11 +67,15 @@ public class ServiceProvider implements IServiceProvider {
 
     @Override
     public void removeAll(boolean terminate) {
-        for (Class<?> clazz : serviceMap.keySet()) {
-            IService service = serviceMap.remove(clazz);
+        Iterator<IService> it = serviceMap.values().iterator();
+
+        while (it.hasNext()) {
+            IService service = it.next();
 
             if (terminate)
                 service.terminate();
+
+            it.remove();
         }
     }
 
