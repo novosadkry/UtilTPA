@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.Request;
+package cz.novosadkry.UtilTPA.Requests;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

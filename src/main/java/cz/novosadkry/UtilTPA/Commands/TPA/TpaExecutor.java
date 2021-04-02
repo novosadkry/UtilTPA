@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Config;
-import cz.novosadkry.UtilTPA.Request.ExpiringRequest;
-import cz.novosadkry.UtilTPA.Request.Request;
-import cz.novosadkry.UtilTPA.Request.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
+import cz.novosadkry.UtilTPA.Requests.Request;
+import cz.novosadkry.UtilTPA.Requests.RequestManager;
 import cz.novosadkry.UtilTPA.UI.RequestInventory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

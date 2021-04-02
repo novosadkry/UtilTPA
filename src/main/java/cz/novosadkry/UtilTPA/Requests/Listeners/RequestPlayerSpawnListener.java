@@ -1,9 +1,9 @@
-package cz.novosadkry.UtilTPA.Request.Listeners;
+package cz.novosadkry.UtilTPA.Requests.Listeners;
 
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
-import cz.novosadkry.UtilTPA.Request.ExpiringRequest;
-import cz.novosadkry.UtilTPA.Request.RequestManager;
-import cz.novosadkry.UtilTPA.Request.RequestPlayer;
+import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
+import cz.novosadkry.UtilTPA.Requests.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

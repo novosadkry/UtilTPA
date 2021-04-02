@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.Request;
+package cz.novosadkry.UtilTPA.Requests;
 
 import cz.novosadkry.UtilTPA.Main;
 import org.bukkit.Bukkit;

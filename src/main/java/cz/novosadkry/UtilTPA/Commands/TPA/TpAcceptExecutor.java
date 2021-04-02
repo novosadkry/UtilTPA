@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
-import cz.novosadkry.UtilTPA.Request.Request;
-import cz.novosadkry.UtilTPA.Request.RequestManager;
-import cz.novosadkry.UtilTPA.Request.RequestPlayer;
+import cz.novosadkry.UtilTPA.Requests.Request;
+import cz.novosadkry.UtilTPA.Requests.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

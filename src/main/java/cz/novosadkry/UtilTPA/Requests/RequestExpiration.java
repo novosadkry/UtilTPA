@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.Request;
+package cz.novosadkry.UtilTPA.Requests;
 
 public class RequestExpiration implements Runnable {
     ExpiringRequest request;

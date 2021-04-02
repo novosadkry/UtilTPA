@@ -8,8 +8,8 @@ import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Main;
-import cz.novosadkry.UtilTPA.Request.Request;
-import cz.novosadkry.UtilTPA.Request.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.Request;
+import cz.novosadkry.UtilTPA.Requests.RequestManager;
 
 public class RequestMessageListener implements IMessageListener {
     @Override

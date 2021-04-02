@@ -20,7 +20,7 @@ import cz.novosadkry.UtilTPA.Commands.TPA.TpaExecutor;
 import cz.novosadkry.UtilTPA.Heads.Listeners.HeadPlayerJoinListener;
 import cz.novosadkry.UtilTPA.Heads.HeadProviderEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
-import cz.novosadkry.UtilTPA.Request.Listeners.RequestPlayerSpawnListener;
+import cz.novosadkry.UtilTPA.Requests.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.Localization.Locale;
 import cz.novosadkry.UtilTPA.Services.IService;
 import cz.novosadkry.UtilTPA.Services.IServiceProvider;

@@ -2,7 +2,7 @@ package cz.novosadkry.UtilBungee.Transport.Concrete.Messages;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import cz.novosadkry.UtilTPA.Request.Request;
+import cz.novosadkry.UtilTPA.Requests.Request;
 
 public class RequestDenyMessage extends RequestMessage {
     protected String reason;

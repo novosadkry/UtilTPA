@@ -6,7 +6,7 @@ import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.Message;
 import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.IMessageResolver;
 import cz.novosadkry.UtilBungee.Transport.Resolvers.ResolveResult;
-import cz.novosadkry.UtilTPA.Request.Request;
+import cz.novosadkry.UtilTPA.Requests.Request;
 
 public class RequestAcceptMessageResolver implements IMessageResolver {
     @Override
