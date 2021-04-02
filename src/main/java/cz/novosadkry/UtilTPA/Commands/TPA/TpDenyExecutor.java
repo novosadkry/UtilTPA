@@ -1,9 +1,9 @@
 package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
+import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Requests.Managers.IRequestManager;
 import cz.novosadkry.UtilTPA.Requests.Request;
-import cz.novosadkry.UtilTPA.Requests.Managers.RequestManager;
 import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -19,7 +19,7 @@ public class TpDenyExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             RequestPlayer player = new RequestPlayer((Player) sender);
-            IRequestManager requestManager = RequestManager.getInstance();
+            IRequestManager requestManager = Main.getService(IRequestManager.class);
 
             if (requestManager.hasRequests(player)) {
                 Request request;

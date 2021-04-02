@@ -3,11 +3,12 @@ package cz.novosadkry.UtilTPA.Requests.Managers;
 import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
 import cz.novosadkry.UtilTPA.Requests.Request;
 import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
+import cz.novosadkry.UtilTPA.Services.IService;
 
 import java.util.LinkedList;
 import java.util.Map;
 
-public interface IRequestManager {
+public interface IRequestManager extends IService {
     Map<RequestPlayer, LinkedList<Request>> getAll();
 
     LinkedList<Request> getAllPlayer(RequestPlayer player);

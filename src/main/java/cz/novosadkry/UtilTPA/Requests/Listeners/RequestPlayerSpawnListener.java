@@ -1,8 +1,9 @@
 package cz.novosadkry.UtilTPA.Requests.Listeners;
 
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
+import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
-import cz.novosadkry.UtilTPA.Requests.Managers.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.Managers.RemoteRequestManager;
 import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +18,7 @@ public class RequestPlayerSpawnListener implements Listener {
     @EventHandler
     public void onPlayerSpawnEvent(PlayerSpawnLocationEvent e) {
         RequestPlayer requestPlayer = new RequestPlayer(e.getPlayer());
-        RequestManager requestManager = RequestManager.getInstance();
+        RemoteRequestManager requestManager = Main.getService(RemoteRequestManager.class);
 
         LinkedList<ExpiringRequest> awaited = requestManager.getAwaitedPlayer(requestPlayer);
         ExpiringRequest request = awaited.peekLast();

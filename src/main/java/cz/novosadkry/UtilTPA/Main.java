@@ -22,6 +22,9 @@ import cz.novosadkry.UtilTPA.Heads.HeadProviderEmpty;
 import cz.novosadkry.UtilTPA.Heads.Service.HeadCacheService;
 import cz.novosadkry.UtilTPA.Requests.Listeners.RequestPlayerSpawnListener;
 import cz.novosadkry.UtilTPA.Localization.Locale;
+import cz.novosadkry.UtilTPA.Requests.Managers.IRequestManager;
+import cz.novosadkry.UtilTPA.Requests.Managers.LocalRequestManager;
+import cz.novosadkry.UtilTPA.Requests.Managers.RemoteRequestManager;
 import cz.novosadkry.UtilTPA.Services.IService;
 import cz.novosadkry.UtilTPA.Services.IServiceProvider;
 import cz.novosadkry.UtilTPA.Services.ServiceProvider;
@@ -57,12 +60,13 @@ public class Main extends JavaPlugin {
                 .registerResolver(new RequestDenyMessageResolver())
                 .registerResolver(new RequestMessageResolver());
 
-        BungeeDriver bungeeDriver = config.getBoolean("bungeecord.enabled")
-                ? new BungeeDriverOnline(
-                    "utiltpa:channel",
-                    config.getLong("bungeecord.playerlist-tick"),
-                    messageResolvers)
-                : new BungeeDriverOffline();
+        BungeeDriver bungeeDriver =
+                config.getBoolean("bungeecord.enabled")
+                    ? new BungeeDriverOnline(
+                        "utiltpa:channel",
+                        config.getLong("bungeecord.playerlist-tick"),
+                        messageResolvers)
+                    : new BungeeDriverOffline();
 
         IHeadProvider headProvider =
                 config.getBoolean("head-inventory.enabled") &&
@@ -72,6 +76,11 @@ public class Main extends JavaPlugin {
                         config.getLong("head-inventory.cache.refresh-tick"),
                         config.getLong("head-inventory.cache.queue-tick"))
                     : new HeadProviderEmpty();
+
+        IRequestManager requestManager =
+                config.getBoolean("bungeecord.enabled")
+                    ? new RemoteRequestManager()
+                    : new LocalRequestManager();
 
         getCommand("tpa").setExecutor(new TpaExecutor());
         getCommand("tpaccept").setExecutor(new TpAcceptExecutor());
@@ -93,6 +102,7 @@ public class Main extends JavaPlugin {
 
         getServiceProvider().add(bungeeDriver, true);
         getServiceProvider().add(headProvider, true);
+        getServiceProvider().add(requestManager, true);
 
         super.onEnable();
     }

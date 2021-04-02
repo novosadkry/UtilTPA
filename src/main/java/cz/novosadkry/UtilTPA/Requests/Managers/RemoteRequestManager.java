@@ -11,15 +11,20 @@ import cz.novosadkry.UtilTPA.Main;
 import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
 import cz.novosadkry.UtilTPA.Requests.Request;
 import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
-import static cz.novosadkry.UtilTPA.Localization.Locale.*;
+import static cz.novosadkry.UtilTPA.Localization.Locale.tl;
+import static cz.novosadkry.UtilTPA.Localization.Locale.tlc;
 
-public class RequestManager implements IRequestManager {
-    private static RequestManager manager;
+public class RemoteRequestManager implements IRequestManager {
     private final Map<RequestPlayer, LinkedList<Request>> requests = new HashMap<>();
     private final Map<RequestPlayer, LinkedList<ExpiringRequest>> awaitedRequests = new HashMap<>();
 
@@ -186,10 +191,9 @@ public class RequestManager implements IRequestManager {
         request.onResolved();
     }
 
-    public static RequestManager getInstance() {
-        if (manager == null)
-            manager = new RequestManager();
+    @Override
+    public void initialize() { }
 
-        return manager;
-    }
+    @Override
+    public void terminate() { }
 }

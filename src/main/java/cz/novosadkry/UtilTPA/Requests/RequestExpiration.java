@@ -1,6 +1,7 @@
 package cz.novosadkry.UtilTPA.Requests;
 
-import cz.novosadkry.UtilTPA.Requests.Managers.RequestManager;
+import cz.novosadkry.UtilTPA.Main;
+import cz.novosadkry.UtilTPA.Requests.Managers.LocalRequestManager;
 
 public class RequestExpiration implements Runnable {
     ExpiringRequest request;
@@ -11,7 +12,7 @@ public class RequestExpiration implements Runnable {
 
     public void run() {
         request.setExpired(true);
-        RequestManager.getInstance().timeoutRequest(request);
+        Main.getService(LocalRequestManager.class).timeoutRequest(request);
     }
 }
 
