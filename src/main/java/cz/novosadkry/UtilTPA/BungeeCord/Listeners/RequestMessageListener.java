@@ -8,8 +8,9 @@ import cz.novosadkry.UtilBungee.Transport.Messages.IMessage;
 import cz.novosadkry.UtilBungee.Transport.Messages.IMessageListener;
 import cz.novosadkry.UtilTPA.BungeeCord.Drivers.BungeeDriver;
 import cz.novosadkry.UtilTPA.Main;
+import cz.novosadkry.UtilTPA.Requests.Managers.IRequestManager;
 import cz.novosadkry.UtilTPA.Requests.Request;
-import cz.novosadkry.UtilTPA.Requests.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.Managers.RequestManager;
 
 public class RequestMessageListener implements IMessageListener {
     @Override
@@ -19,7 +20,7 @@ public class RequestMessageListener implements IMessageListener {
     }
 
     public void onMessage(RequestMessage msg) {
-        RequestManager requestManager = RequestManager.getInstance();
+        IRequestManager requestManager = RequestManager.getInstance();
         Request request = msg.getRequest();
 
         switch (msg.getName()) {

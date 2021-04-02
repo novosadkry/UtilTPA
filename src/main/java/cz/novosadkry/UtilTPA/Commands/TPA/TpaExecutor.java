@@ -2,8 +2,9 @@ package cz.novosadkry.UtilTPA.Commands.TPA;
 
 import cz.novosadkry.UtilTPA.Config;
 import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
+import cz.novosadkry.UtilTPA.Requests.Managers.IRequestManager;
 import cz.novosadkry.UtilTPA.Requests.Request;
-import cz.novosadkry.UtilTPA.Requests.RequestManager;
+import cz.novosadkry.UtilTPA.Requests.Managers.RequestManager;
 import cz.novosadkry.UtilTPA.UI.RequestInventory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +19,7 @@ public class TpaExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
-            RequestManager requestManager = RequestManager.getInstance();
+            IRequestManager requestManager = RequestManager.getInstance();
 
             if (args.length == 1) {
                 Request request = new ExpiringRequest(player.getName(), args[0], 20000);

@@ -1,4 +1,4 @@
-package cz.novosadkry.UtilTPA.Requests;
+package cz.novosadkry.UtilTPA.Requests.Managers;
 
 import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestAcceptMessage;
 import cz.novosadkry.UtilBungee.Transport.Concrete.Messages.RequestDenyMessage;
@@ -8,6 +8,9 @@ import cz.novosadkry.UtilTPA.Commands.Back.BackInfo;
 import cz.novosadkry.UtilTPA.Commands.Back.BackPersist;
 import cz.novosadkry.UtilTPA.Localization.PlaceHolder;
 import cz.novosadkry.UtilTPA.Main;
+import cz.novosadkry.UtilTPA.Requests.ExpiringRequest;
+import cz.novosadkry.UtilTPA.Requests.Request;
+import cz.novosadkry.UtilTPA.Requests.RequestPlayer;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
@@ -15,15 +18,17 @@ import java.util.*;
 
 import static cz.novosadkry.UtilTPA.Localization.Locale.*;
 
-public class RequestManager {
+public class RequestManager implements IRequestManager {
     private static RequestManager manager;
     private final Map<RequestPlayer, LinkedList<Request>> requests = new HashMap<>();
     private final Map<RequestPlayer, LinkedList<ExpiringRequest>> awaitedRequests = new HashMap<>();
 
+    @Override
     public Map<RequestPlayer, LinkedList<Request>> getAll() {
         return requests;
     }
 
+    @Override
     public LinkedList<Request> getAllPlayer(RequestPlayer player) {
         requests.computeIfAbsent(player, k -> new LinkedList<>());
         return requests.get(player);
@@ -38,24 +43,29 @@ public class RequestManager {
         return awaitedRequests.get(player);
     }
 
+    @Override
     public Request get(RequestPlayer to) {
         return getAllPlayer(to).peek();
     }
 
+    @Override
     public Request getFrom(RequestPlayer to, RequestPlayer from) {
         return getAllPlayer(to).stream()
                 .filter(r -> r.getFrom().equals(from))
                 .findFirst().orElse(null);
     }
 
+    @Override
     public boolean hasRequests(RequestPlayer to) {
         return !getAllPlayer(to).isEmpty();
     }
 
+    @Override
     public boolean hasRequest(RequestPlayer to, Request request) {
         return getAllPlayer(to).contains(request);
     }
 
+    @Override
     public void sendRequest(Request request) {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
@@ -113,6 +123,7 @@ public class RequestManager {
         }
     }
 
+    @Override
     public void timeoutRequest(ExpiringRequest request) {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
@@ -128,6 +139,7 @@ public class RequestManager {
                 .send(Main.getService(BungeeDriver.class)));
     }
 
+    @Override
     public void acceptRequest(Request request) {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
@@ -157,6 +169,7 @@ public class RequestManager {
         request.onResolved();
     }
 
+    @Override
     public void denyRequest(Request request) {
         final RequestPlayer from = request.getFrom();
         final RequestPlayer to = request.getTo();
