@@ -1,8 +1,6 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import java.util.TimerTask;
-
-public class RequestExpiration extends TimerTask {
+public class RequestExpiration implements Runnable {
     ExpiringRequest request;
 
     public RequestExpiration(ExpiringRequest request) {

@@ -1,10 +1,12 @@
 package cz.novosadkry.UtilTPA.Request;
 
-import java.util.Timer;
+import cz.novosadkry.UtilTPA.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 public class ExpiringRequest extends Request {
-    private Timer timer;
     private final long expiration;
+    private BukkitTask expirationTask;
 
     private boolean expired;
 
@@ -24,17 +26,17 @@ public class ExpiringRequest extends Request {
     }
 
     public ExpiringRequest startCountdown() {
-        if (timer == null) // Lazy initialization
-            this.timer = new Timer();
+        expirationTask = Bukkit.getScheduler().runTaskLater(
+                Main.getInstance(),
+                new RequestExpiration(this),
+                expiration
+        );
 
-        timer.schedule(new RequestExpiration(this), expiration);
         return this;
     }
 
     public ExpiringRequest cancelCountdown() {
-        if (timer != null)
-            timer.cancel();
-
+        expirationTask.cancel();
         return this;
     }
 
